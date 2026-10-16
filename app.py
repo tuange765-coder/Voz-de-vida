@@ -6,10 +6,7 @@ st.set_page_config(page_title="La Palabra", page_icon="🙏")
 # Componente de login
 login_obj = __login__(
     auth_token=st.secrets["courier_auth_token"],
-    supa_url=st.secrets["supa_url"],
-    supa_key=st.secrets["supa_key"],
-    logout_button_name='Cerrar Sesión',
-    hide_menu_bool=False,
+    company_name="La Palabra",
     width=200,
     height=250
 )
@@ -20,11 +17,9 @@ if LOGGED_IN:
     st.title("🙏 La Palabra")
     st.success("Bienvenido a la Palabra de Dios")
 
-    # Oración diaria
     st.header("🙏 Oración Diaria")
     st.write("Señor, gracias por este nuevo día. Guía mis pasos y dame sabiduría para caminar en tu verdad.")
 
-    # Muro de miembros
     st.header("❤️ Muro de Miembros")
     st.markdown("""
     Estas son las personas que con su donación apoyan esta obra:
