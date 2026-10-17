@@ -72,7 +72,7 @@ st.markdown(f"""
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }}
     /* Forzar texto negro dentro de tarjetas claras */
-    .card-light p, .card-light span, .card-light div, .card-light strong {{
+    .card-light p, .card-light span, .card-light div, .card-light strong, .card-light li {{
         color: #1A1A1A !important;
     }}
 
@@ -118,7 +118,7 @@ st.markdown(f"""
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }}
     /* Forzar texto blanco dentro de tarjetas oscuras */
-    .card-dark p, .card-dark span, .card-dark div {{
+    .card-dark p, .card-dark span, .card-dark div, .card-dark li {{
         color: #FDFBF7 !important;
     }}
 
@@ -202,6 +202,16 @@ st.markdown(f"""
         transform: translateY(-3px) scale(1.02);
         box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8);
         color: #1A0F0A !important;
+    }}
+    
+    /* Estilo para listas dentro de tarjetas */
+    .card-light ul, .card-dark ul {{
+        margin-top: 10px;
+        padding-left: 20px;
+    }}
+    .card-light li, .card-dark li {{
+        margin-bottom: 10px;
+        line-height: 1.6;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -385,18 +395,80 @@ def mostrar_biblia():
         st.error(f"No se pudo cargar el capítulo. Verifica tu conexión o intenta con otro capítulo. (Error: {e})")
 
 
+# --- PÁGINA: CURIOSIDADES (Datos Históricos y Arqueológicos) ---
+def mostrar_curiosidades():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔍 Curiosidades Bíblicas</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # 1. Estela de Merneptah
+    st.markdown("""
+    <div class="card-light">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">📜 La Estela de Merneptah</h3>
+        <p><strong>¿Qué es?</strong> Una losa de granito negro descubierta en 1896 en Tebas, Egipto.</p>
+        <p><strong>¿Por qué es importante?</strong> Contiene la <strong>primera mención conocida de "Israel"</strong> fuera de la Biblia. El faraón Merneptah (c. 1209 a.C.) se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época.</p>
+        <p><strong>Referencia bíblica:</strong> Éxodo y Josué (la conquista de la Tierra Prometida).</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 2. Cilindro de Ciro
+    st.markdown("""
+    <div class="card-light">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">🏺 El Cilindro de Ciro</h3>
+        <p><strong>¿Qué es?</strong> Un cilindro de arcilla con inscripciones en acadio, encontrado en Babilonia (actual Irak).</p>
+        <p><strong>¿Por qué es importante?</strong> Documenta la conquista de Babilonia por Ciro el Grande y su política de <strong>permitir a los pueblos deportados regresar a sus tierras</strong>. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén.</p>
+        <p><strong>Referencia bíblica:</strong> Esdras 1:1-4; Isaías 44:28–45:1.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 3. Rollos del Mar Muerto
+    st.markdown("""
+    <div class="card-light">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">📜 Los Rollos del Mar Muerto</h3>
+        <p><strong>¿Qué son?</strong> Miles de fragmentos de manuscritos descubiertos en cuevas cerca de Qumrán, a orillas del Mar Muerto, a partir de 1947.</p>
+        <p><strong>¿Por qué son importantes?</strong> Son los <strong>manuscritos bíblicos más antiguos conocidos</strong> (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años.</p>
+        <p><strong>Dato curioso:</strong> El fragmento más antiguo de Génesis 1:1 fue encontrado entre estos rollos.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 4. El Túnel de Ezequías (o Siloé)
+    st.markdown("""
+    <div class="card-light">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">💧 El Túnel de Ezequías</h3>
+        <p><strong>¿Qué es?</strong> Un túnel de 533 metros excavado en roca sólida bajo Jerusalén.</p>
+        <p><strong>¿Por qué es importante?</strong> Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. Una inscripción antigua (la Inscripción de Siloé) describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías.</p>
+        <p><strong>Referencia bíblica:</strong> 2 Reyes 20:20; 2 Crónicas 32:30.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 5. La Casa de David (Estela de Tel Dan)
+    st.markdown("""
+    <div class="card-light">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">👑 La Estela de Tel Dan</h3>
+        <p><strong>¿Qué es?</strong> Fragmentos de una estela de basalto encontrados en el norte de Israel en 1993 y 1994.</p>
+        <p><strong>¿Por qué es importante?</strong> Contiene la frase <strong>"Casa de David"</strong> (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia.</p>
+        <p><strong>Referencia bíblica:</strong> 1 Samuel 16–2 Samuel 5.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="card-dark">
+        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras. Como dijo el arqueólogo Joseph Free: "La arqueología ha confirmado incontables pasajes que los críticos habían rechazado como no históricos".</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 # --- OTRAS PÁGINAS (Placeholders) ---
 def mostrar_reflexiones():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
     st.markdown('<div class="card-light"><p>Próximamente: Devocionales diarios.</p></div>', unsafe_allow_html=True)
-
-def mostrar_curiosidades():
-    if st.button("⬅️ Volver al Inicio"):
-        cambiar_pagina("inicio")
-    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔍 Curiosidades</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="card-light"><p>Próximamente: Datos históricos y arqueológicos.</p></div>', unsafe_allow_html=True)
 
 def mostrar_pastor():
     if st.button("⬅️ Volver al Inicio"):
@@ -425,10 +497,10 @@ if LOGGED_IN:
         mostrar_inicio()
     elif st.session_state.pagina_actual == 'biblia':
         mostrar_biblia()
-    elif st.session_state.pagina_actual == 'reflexiones':
-        mostrar_reflexiones()
     elif st.session_state.pagina_actual == 'curiosidades':
         mostrar_curiosidades()
+    elif st.session_state.pagina_actual == 'reflexiones':
+        mostrar_reflexiones()
     elif st.session_state.pagina_actual == 'pastor':
         mostrar_pastor()
     elif st.session_state.pagina_actual == 'mitos':
