@@ -337,19 +337,18 @@ def mostrar_biblia():
             respuesta = requests.get(url)
             respuesta.raise_for_status()
             datos = respuesta.json()
-            # Midvash devuelve los versículos en data.verses
-            versiculos = datos.get("data", {}).get("verses", [])
             
-            if not versiculos:
+            # La API devuelve data.verses como una LISTA DE STRINGS
+            versiculos_texto = datos.get("data", {}).get("verses", [])
+            
+            if not versiculos_texto:
                 st.warning("No se encontraron versículos para esta selección.")
             else:
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
-                for v in versiculos:
-                    num = v.get("verse", "")
-                    texto = v.get("text", "")
+                for i, texto in enumerate(versiculos_texto, start=1):
                     # Forzamos el color negro para que resalte en la tarjeta clara
-                    texto_html += f'<p style="margin-bottom: 12px; color: #1A1A1A !important; font-family: \'Montserrat\', sans-serif;"><strong style="color: #D4AF37;">{num}.</strong> {texto}</p>'
+                    texto_html += f'<p style="margin-bottom: 12px; color: #1A1A1A !important; font-family: \'Montserrat\', sans-serif;"><strong style="color: #D4AF37;">{i}.</strong> {texto}</p>'
                 
                 st.markdown(f"""
                 <div class="premium-card" style="max-height: 600px; overflow-y: auto; background: #FDFBF7;">
