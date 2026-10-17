@@ -4,7 +4,7 @@ import streamlit_supabase_auth_ui.utils as sb_utils
 from streamlit_supabase_auth_ui.widgets import __login__
 
 # ============================================================
-# 1. PARCHE PARA EL ERROR 42501 (MANTENIDO)
+# 1. PARCHE PARA EL ERROR 42501 (INSERT)
 # ============================================================
 def _register_new_usr_patched(name, email, username, password):
     """Versión parcheada que evita el RETURNING * problemático."""
@@ -24,21 +24,20 @@ def _register_new_usr_patched(name, email, username, password):
     ).execute()
 
 sb_utils.register_new_usr = _register_new_usr_patched
+
 # ============================================================
-# 1.5 PARCHE PARA EVITAR EL ERROR DE COURIER
+# 2. PARCHE PARA EL ERROR DE COURIER (CORREO DE BIENVENIDA)
 # ============================================================
 def _welcome_w_email_patched(auth_token, username, email, company_name):
-    """Versión parcheada que no envía correo (evita el error de Courier)."""
-    # Simplemente retorna True para simular que el correo se envió con éxito
+    """Versión parcheada que no envía correo (evita el error 403 de Courier)."""
     return True
 
 sb_utils.welcome_w_email = _welcome_w_email_patched
 # ============================================================
-# ============================================================
 
 
 # ============================================================
-# 2. CONFIGURACIÓN DE LA PÁGINA
+# 3. CONFIGURACIÓN DE LA PÁGINA
 # ============================================================
 st.set_page_config(
     page_title="Voz de Vida - Auditoría Epidemiológica",
@@ -46,11 +45,9 @@ st.set_page_config(
     layout="wide"
 )
 
-
 # ============================================================
-# 3. INICIALIZAR LOGIN
+# 4. INICIALIZAR LOGIN
 # ============================================================
-# Usamos las mismas variables que tienes en tu secrets.toml
 SUPABASE_URL = st.secrets["supa_url"]
 SUPABASE_KEY = st.secrets["supa_key"]
 
@@ -61,11 +58,12 @@ login_obj = __login__(
     height=400,
 )
 
+# --- AQUÍ SE EJECUTA EL LOGIN ---
 LOGGED_IN = login_obj.build_login_ui()
 
 
 # ============================================================
-# 4. CONTENIDO DE LA APP
+# 5. CONTENIDO DE LA APP
 # ============================================================
 if LOGGED_IN:
     st.success("✅ Has iniciado sesión correctamente.")
@@ -163,5 +161,4 @@ if LOGGED_IN:
                 st.caption(f"Longitud total: {len(resultado):,} caracteres")
 
 else:
-    # ESTO ES LO QUE FALTABA: mostrar algo cuando NO se ha iniciado sesión
     st.info("👋 Por favor, inicia sesión o regístrate para continuar.")
