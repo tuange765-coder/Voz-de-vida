@@ -290,7 +290,7 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-# --- PÁGINA: BIBLIA (Midvash API - RVR1960) ---
+# --- PÁGINA: BIBLIA (Bible API - Reina Valera 1960) ---
 def mostrar_biblia():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -299,15 +299,17 @@ def mostrar_biblia():
     st.markdown('<p class="hero-subtitle">Reina-Valera 1960</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    libros = ["Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut", 
-              "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes", "1 Crónicas", "2 Crónicas", "Esdras", 
-              "Nehemías", "Ester", "Job", "Salmos", "Proverbios", "Eclesiastés", "Cantares", 
-              "Isaías", "Jeremías", "Lamentaciones", "Ezequiel", "Daniel", "Oseas", "Joel", "Amós", 
-              "Obadías", "Jonás", "Miqueas", "Nahúm", "Habacuc", "Sofonías", "Hageo", "Zacarías", "Malaquías",
-              "Mateo", "Marcos", "Lucas", "Juan", "Hechos", "Romanos", "1 Corintios", "2 Corintios", 
-              "Gálatas", "Efesios", "Filipenses", "Colosenses", "1 Tesalonicenses", "2 Tesalonicenses", 
-              "1 Timoteo", "2 Timoteo", "Tito", "Filemón", "Hebreos", "Santiago", "1 Pedro", "2 Pedro", 
-              "1 Juan", "2 Juan", "3 Juan", "Judas", "Apocalipsis"]
+    libros = [
+        "Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut",
+        "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes", "1 Crónicas", "2 Crónicas", "Esdras",
+        "Nehemías", "Ester", "Job", "Salmos", "Proverbios", "Eclesiastés", "Cantares",
+        "Isaías", "Jeremías", "Lamentaciones", "Ezequiel", "Daniel", "Oseas", "Joel", "Amós",
+        "Obadías", "Jonás", "Miqueas", "Nahúm", "Habacuc", "Sofonías", "Hageo", "Zacarías", "Malaquías",
+        "Mateo", "Marcos", "Lucas", "Juan", "Hechos", "Romanos", "1 Corintios", "2 Corintios",
+        "Gálatas", "Efesios", "Filipenses", "Colosenses", "1 Tesalonicenses", "2 Tesalonicenses",
+        "1 Timoteo", "2 Timoteo", "Tito", "Filemón", "Hebreos", "Santiago", "1 Pedro", "2 Pedro",
+        "1 Juan", "2 Juan", "3 Juan", "Judas", "Apocalipsis"
+    ]
     
     slugs = {
         "Génesis": "genesis", "Éxodo": "exodus", "Levítico": "leviticus", "Números": "numbers",
@@ -327,14 +329,15 @@ def mostrar_biblia():
         capitulo_sel = st.number_input("Capítulo", min_value=1, max_value=150, value=3)
     
     slug = slugs.get(libro_sel, "john")
-    url = f"https://api.midvash.com/v1/rvr1960/{slug}/{capitulo_sel}"
+    # Usamos bible-api.com con la versión Reina Valera (rvr)
+    url = f"https://bible-api.com/{slug}+{capitulo_sel}?translation=rvr"
     
     try:
         with st.spinner("Cargando la Palabra..."):
             respuesta = requests.get(url)
             respuesta.raise_for_status()
             datos = respuesta.json()
-            versiculos = datos.get("data", {}).get("verses", [])
+            versiculos = datos.get("verses", [])
             
             if not versiculos:
                 st.warning("No se encontraron versículos para esta selección.")
