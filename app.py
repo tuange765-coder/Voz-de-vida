@@ -37,6 +37,8 @@ st.markdown(f"""
         font-family: 'Cormorant Garamond', serif;
         color: #FDFBF7 !important;
     }}
+    
+    /* QUITAMOS EL !IMPORTANT AQUÍ PARA QUE LOS ESTILOS LOCALES FUNCIONEN */
     p, span, div {{
         color: #E6D5C3;
     }}
@@ -177,6 +179,22 @@ st.markdown(f"""
         transform: translateY(-3px) scale(1.02);
         box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8);
         color: #1A0F0A;
+    }}
+    
+    /* NUEVO ESTILO EXCLUSIVO PARA LA BIBLIA */
+    .bible-text {{
+        color: #1A1A1A !important;
+    }}
+    .bible-text p {{
+        color: #1A1A1A !important;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }}
+    .bible-text strong {{
+        color: #D4AF37 !important;
+        margin-right: 5px;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -329,7 +347,6 @@ def mostrar_biblia():
         capitulo_sel = st.number_input("Capítulo", min_value=1, max_value=150, value=3)
     
     slug = slugs.get(libro_sel, "john")
-    # Midvash API con RVR1960
     url = f"https://api.midvash.com/v1/rvr1960/{slug}/{capitulo_sel}"
     
     try:
@@ -337,8 +354,6 @@ def mostrar_biblia():
             respuesta = requests.get(url)
             respuesta.raise_for_status()
             datos = respuesta.json()
-            
-            # La API devuelve data.verses como una LISTA DE STRINGS
             versiculos_texto = datos.get("data", {}).get("verses", [])
             
             if not versiculos_texto:
@@ -347,11 +362,12 @@ def mostrar_biblia():
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
                 for i, texto in enumerate(versiculos_texto, start=1):
-                    # Forzamos el color negro para que resalte en la tarjeta clara
-                    texto_html += f'<p style="margin-bottom: 12px; color: #1A1A1A !important; font-family: \'Montserrat\', sans-serif;"><strong style="color: #D4AF37;">{i}.</strong> {texto}</p>'
+                    # Usamos la clase bible-text para forzar el color negro
+                    texto_html += f'<p><strong>{i}.</strong> {texto}</p>'
                 
+                # Envolvemos todo en el div con la clase bible-text
                 st.markdown(f"""
-                <div class="premium-card" style="max-height: 600px; overflow-y: auto; background: #FDFBF7;">
+                <div class="premium-card bible-text" style="max-height: 600px; overflow-y: auto; background: #FDFBF7;">
                     {texto_html}
                 </div>
                 """, unsafe_allow_html=True)
