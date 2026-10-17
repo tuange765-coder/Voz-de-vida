@@ -290,13 +290,13 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-# --- PÁGINA: BIBLIA ---
+# --- PÁGINA: BIBLIA (Midvash API - RVR1960) ---
 def mostrar_biblia():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">📖 La Biblia</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">Reina-Valera 1909 (Dominio Público)</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Reina-Valera 1960</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
     libros = ["Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut", 
@@ -322,19 +322,19 @@ def mostrar_biblia():
     
     col_libro, col_capitulo = st.columns([2, 1])
     with col_libro:
-        libro_sel = st.selectbox("Selecciona un libro", libros, index=42) # Por defecto Juan
+        libro_sel = st.selectbox("Selecciona un libro", libros, index=42)
     with col_capitulo:
         capitulo_sel = st.number_input("Capítulo", min_value=1, max_value=150, value=3)
     
     slug = slugs.get(libro_sel, "john")
-    url = f"https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/es-rvr09/books/{slug}/chapters/{capitulo_sel}.json"
+    url = f"https://api.midvash.com/v1/rvr1960/{slug}/{capitulo_sel}"
     
     try:
         with st.spinner("Cargando la Palabra..."):
             respuesta = requests.get(url)
             respuesta.raise_for_status()
             datos = respuesta.json()
-            versiculos = datos.get("data", [])
+            versiculos = datos.get("data", {}).get("verses", [])
             
             if not versiculos:
                 st.warning("No se encontraron versículos para esta selección.")
@@ -344,17 +344,19 @@ def mostrar_biblia():
                 for v in versiculos:
                     num = v.get("verse", "")
                     texto = v.get("text", "")
-                    texto_html += f'<p style="margin-bottom: 10px;"><strong style="color: #D4AF37;">{num}.</strong> {texto}</p>'
+                    # Forzamos el color negro para que resalte en la tarjeta clara
+                    texto_html += f'<p style="margin-bottom: 12px; color: #1A1A1A !important; font-family: \'Montserrat\', sans-serif;"><strong style="color: #D4AF37;">{num}.</strong> {texto}</p>'
                 
                 st.markdown(f"""
-                <div class="premium-card" style="max-height: 500px; overflow-y: auto;">
+                <div class="premium-card" style="max-height: 600px; overflow-y: auto; background: #FDFBF7;">
                     {texto_html}
                 </div>
                 """, unsafe_allow_html=True)
     except Exception as e:
-        st.error(f"No se pudo cargar el capítulo. (Error: {e})")
+        st.error(f"No se pudo cargar el capítulo. Verifica tu conexión o intenta con otro capítulo. (Error: {e})")
 
-# --- OTRAS PÁGINAS (Placeholders por ahora) ---
+
+# --- OTRAS PÁGINAS (Placeholders) ---
 def mostrar_reflexiones():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -384,6 +386,7 @@ def mostrar_favoritos():
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">❤️ Favoritos</h1>', unsafe_allow_html=True)
     st.markdown('<div class="premium-card"><p>Próximamente: Tus versículos guardados.</p></div>', unsafe_allow_html=True)
+
 
 # ============================================
 # ENRUTADOR PRINCIPAL
