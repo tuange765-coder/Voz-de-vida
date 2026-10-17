@@ -25,6 +25,16 @@ def _register_new_usr_patched(name, email, username, password):
 
 sb_utils.register_new_usr = _register_new_usr_patched
 # ============================================================
+# 1.5 PARCHE PARA EVITAR EL ERROR DE COURIER
+# ============================================================
+def _welcome_w_email_patched(auth_token, username, email, company_name):
+    """Versión parcheada que no envía correo (evita el error de Courier)."""
+    # Simplemente retorna True para simular que el correo se envió con éxito
+    return True
+
+sb_utils.welcome_w_email = _welcome_w_email_patched
+# ============================================================
+# ============================================================
 
 
 # ============================================================
