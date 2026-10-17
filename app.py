@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ============================================
-# ESTILOS PROFESIONALES (CÁLIDO Y ESPIRITUAL)
+# ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE)
 # ============================================
 IMG_URL = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop"
 
@@ -21,8 +21,9 @@ st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap');
 
+    /* Fondo general */
     .stApp {{
-        background-image: linear-gradient(rgba(40, 20, 10, 0.65), rgba(20, 10, 5, 0.85)), url("{IMG_URL}");
+        background-image: linear-gradient(rgba(40, 20, 10, 0.7), rgba(20, 10, 5, 0.9)), url("{IMG_URL}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -33,14 +34,10 @@ st.markdown(f"""
     footer {{visibility: hidden;}}
     header {{visibility: hidden;}}
 
+    /* Títulos principales (siempre blancos porque van sobre la imagen) */
     h1, h2, h3 {{
         font-family: 'Cormorant Garamond', serif;
         color: #FDFBF7 !important;
-    }}
-    
-    /* QUITAMOS EL !IMPORTANT AQUÍ PARA QUE LOS ESTILOS LOCALES FUNCIONEN */
-    p, span, div {{
-        color: #E6D5C3;
     }}
 
     .hero-title {{
@@ -56,42 +53,47 @@ st.markdown(f"""
     .hero-subtitle {{
         text-align: center;
         font-size: 1.2rem;
-        color: #D4AF37 !important;
+        color: #D4AF37 !important; /* Dorado */
         margin-top: 10px;
         font-weight: 500;
         letter-spacing: 2px;
         text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
     }}
 
-    .premium-card {{
-        background: rgba(45, 30, 20, 0.55);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(212, 175, 55, 0.25);
+    /* ==========================================
+       TARJETAS CLARAS (Fondo claro, texto negro)
+       ========================================== */
+    .card-light {{
+        background: #FDFBF7 !important;
+        border: 1px solid rgba(212, 175, 55, 0.4);
         border-radius: 20px;
         padding: 30px;
         margin-bottom: 25px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }}
+    /* Forzar texto negro dentro de tarjetas claras */
+    .card-light p, .card-light span, .card-light div, .card-light strong {{
+        color: #1A1A1A !important;
+    }}
 
-    .verse-highlight {{
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(45, 30, 20, 0.6) 100%);
+    /* Tarjeta especial para el versículo del inicio */
+    .verse-light {{
+        background: #FDFBF7 !important;
         border-left: 5px solid #D4AF37;
         border-radius: 16px;
         padding: 40px;
         margin: 20px 0 40px 0;
-        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }}
-    .verse-text {{
+    .verse-light .verse-text {{
         font-family: 'Cormorant Garamond', serif;
         font-size: 1.8rem;
         font-style: italic;
         line-height: 1.5;
-        color: #FDFBF7 !important;
+        color: #1A1A1A !important; /* Texto negro */
         text-align: center;
-        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
     }}
-    .verse-ref {{
+    .verse-light .verse-ref {{
         display: block;
         margin-top: 20px;
         font-family: 'Montserrat', sans-serif;
@@ -103,10 +105,28 @@ st.markdown(f"""
         text-align: center;
     }}
 
+    /* ==========================================
+       TARJETAS OSCURAS (Fondo oscuro, texto blanco)
+       ========================================== */
+    .card-dark {{
+        background: rgba(30, 20, 15, 0.85) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }}
+    /* Forzar texto blanco dentro de tarjetas oscuras */
+    .card-dark p, .card-dark span, .card-dark div {{
+        color: #FDFBF7 !important;
+    }}
+
+    /* Títulos de sección */
     .section-header {{
         font-size: 1.4rem;
         font-weight: 600;
-        color: #FDFBF7 !important;
+        color: #FDFBF7 !important; /* Blanco sobre el fondo */
         margin-bottom: 20px;
         display: flex;
         align-items: center;
@@ -114,59 +134,62 @@ st.markdown(f"""
         text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
     }}
 
+    /* Botones del menú principal */
     .stButton>button {{
-        background: rgba(30, 20, 15, 0.6);
-        color: #FDFBF7;
-        border: 1px solid rgba(212, 175, 55, 0.3);
+        background: #FDFBF7 !important; /* Fondo claro */
+        color: #1A1A1A !important; /* Texto negro */
+        border: 1px solid rgba(212, 175, 55, 0.5);
         border-radius: 12px;
         padding: 18px 20px;
-        font-weight: 500;
+        font-weight: 600;
         font-family: 'Montserrat', sans-serif;
         font-size: 0.95rem;
         transition: all 0.3s ease;
         width: 100%;
         text-align: left;
-        backdrop-filter: blur(5px);
     }}
     .stButton>button:hover {{
-        background: rgba(212, 175, 55, 0.2);
+        background: #F3E5AB !important;
         border-color: #D4AF37;
-        color: #D4AF37;
+        color: #1A1A1A !important;
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }}
     .stButton>button p {{
+        color: #1A1A1A !important;
         font-size: 0.95rem;
         margin: 0;
     }}
 
+    /* Muro de miembros (dentro de tarjeta clara) */
     .member-row {{
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 15px 0;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
     }}
     .member-row:last-child {{
         border-bottom: none;
     }}
     .member-name {{
         font-weight: 600;
-        color: #FDFBF7;
+        color: #1A1A1A !important;
         font-size: 1.05rem;
     }}
     .member-date {{
         font-size: 0.8rem;
-        color: #D4AF37;
-        background: rgba(212, 175, 55, 0.1);
+        color: #1A1A1A !important;
+        background: rgba(212, 175, 55, 0.2);
         padding: 5px 12px;
         border-radius: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.3);
+        border: 1px solid rgba(212, 175, 55, 0.4);
     }}
 
+    /* Botón de donación */
     .stButton>button[kind="primary"] {{
-        background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%);
-        color: #1A0F0A;
+        background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
+        color: #1A0F0A !important;
         border: none;
         font-weight: 700;
         text-align: center;
@@ -178,23 +201,7 @@ st.markdown(f"""
     .stButton>button[kind="primary"]:hover {{
         transform: translateY(-3px) scale(1.02);
         box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8);
-        color: #1A0F0A;
-    }}
-    
-    /* NUEVO ESTILO EXCLUSIVO PARA LA BIBLIA */
-    .bible-text {{
-        color: #1A1A1A !important;
-    }}
-    .bible-text p {{
-        color: #1A1A1A !important;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 1.05rem;
-        line-height: 1.8;
-        margin-bottom: 15px;
-    }}
-    .bible-text strong {{
-        color: #D4AF37 !important;
-        margin-right: 5px;
+        color: #1A0F0A !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -232,16 +239,18 @@ def mostrar_inicio():
     col_izq, col_der = st.columns([2.2, 1], gap="large")
 
     with col_izq:
+        # Versículo del día (Tarjeta Clara)
         st.markdown("""
-        <div class="verse-highlight">
+        <div class="verse-light">
             <div class="verse-text">"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."</div>
             <span class="verse-ref">Juan 3:16 — Versículo del día</span>
         </div>
         """, unsafe_allow_html=True)
 
+        # Oración (Tarjeta Clara)
         st.markdown('<div class="section-header">🙏 Oración de la Mañana</div>', unsafe_allow_html=True)
         st.markdown("""
-        <div class="premium-card">
+        <div class="card-light">
             <p style="font-size: 1.15rem; line-height: 1.8; margin: 0; font-weight: 400; font-style: italic;">
             Señor, gracias por este nuevo día que me regalas. Guía mis pasos, ilumina mi mente y guarda mi corazón en tu verdad. Que cada palabra que salga de mi boca sea agradable a ti, y que cada acción refleje tu amor. Amén.
             </p>
@@ -276,10 +285,11 @@ def mostrar_inicio():
                 cambiar_pagina("favoritos")
 
     with col_der:
+        # Muro de miembros (Tarjeta Clara)
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
         st.markdown("""
-        <div class="premium-card" style="padding: 25px;">
-            <p style="font-size: 0.9rem; color: #E6D5C3; margin-bottom: 15px; font-style: italic;">
+        <div class="card-light" style="padding: 25px;">
+            <p style="font-size: 0.9rem; margin-bottom: 15px; font-style: italic;">
                 Personas que con su donación apoyan esta obra:
             </p>
             <div class="member-row">
@@ -301,10 +311,11 @@ def mostrar_inicio():
             st.info("Redirigiendo a Ko-fi... (Aquí irá tu enlace)")
 
         st.markdown("<br>", unsafe_allow_html=True)
+        # Mensaje final (Tarjeta Oscura para contraste)
         st.markdown("""
-        <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 20px; text-align: center; backdrop-filter: blur(5px);">
-            <p style="color: #D4AF37; font-size: 0.9rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
-            <p style="color: #E6D5C3; font-size: 0.8rem; margin-top: 8px;">Mantenida por donaciones</p>
+        <div class="card-dark" style="padding: 20px; text-align: center;">
+            <p style="color: #D4AF37 !important; font-size: 0.9rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
+            <p style="font-size: 0.8rem; margin-top: 8px;">Mantenida por donaciones</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -362,12 +373,11 @@ def mostrar_biblia():
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
                 for i, texto in enumerate(versiculos_texto, start=1):
-                    # Usamos la clase bible-text para forzar el color negro
-                    texto_html += f'<p><strong>{i}.</strong> {texto}</p>'
+                    texto_html += f'<p><strong style="color: #D4AF37 !important;">{i}.</strong> {texto}</p>'
                 
-                # Envolvemos todo en el div con la clase bible-text
+                # Usamos la tarjeta clara para la Biblia
                 st.markdown(f"""
-                <div class="premium-card bible-text" style="max-height: 600px; overflow-y: auto; background: #FDFBF7;">
+                <div class="card-light" style="max-height: 600px; overflow-y: auto;">
                     {texto_html}
                 </div>
                 """, unsafe_allow_html=True)
@@ -380,31 +390,31 @@ def mostrar_reflexiones():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="premium-card"><p>Próximamente: Devocionales diarios.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-light"><p>Próximamente: Devocionales diarios.</p></div>', unsafe_allow_html=True)
 
 def mostrar_curiosidades():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔍 Curiosidades</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="premium-card"><p>Próximamente: Datos históricos y arqueológicos.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-light"><p>Próximamente: Datos históricos y arqueológicos.</p></div>', unsafe_allow_html=True)
 
 def mostrar_pastor():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🙋 Pregúntale al Pastor</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="premium-card"><p>Próximamente: Formulario de contacto.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-light"><p>Próximamente: Formulario de contacto.</p></div>', unsafe_allow_html=True)
 
 def mostrar_mitos():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">⚠️ Mitos y Doctrinas</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="premium-card"><p>Próximamente: Aclaraciones bíblicas.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-light"><p>Próximamente: Aclaraciones bíblicas.</p></div>', unsafe_allow_html=True)
 
 def mostrar_favoritos():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">❤️ Favoritos</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="premium-card"><p>Próximamente: Tus versículos guardados.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-light"><p>Próximamente: Tus versículos guardados.</p></div>', unsafe_allow_html=True)
 
 
 # ============================================
