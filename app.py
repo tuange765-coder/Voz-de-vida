@@ -21,7 +21,6 @@ st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap');
 
-    /* Fondo general */
     .stApp {{
         background-image: linear-gradient(rgba(40, 20, 10, 0.7), rgba(20, 10, 5, 0.9)), url("{IMG_URL}");
         background-size: cover;
@@ -34,7 +33,6 @@ st.markdown(f"""
     footer {{visibility: hidden;}}
     header {{visibility: hidden;}}
 
-    /* Títulos principales (siempre blancos porque van sobre la imagen) */
     h1, h2, h3 {{
         font-family: 'Cormorant Garamond', serif;
         color: #FDFBF7 !important;
@@ -53,16 +51,13 @@ st.markdown(f"""
     .hero-subtitle {{
         text-align: center;
         font-size: 1.2rem;
-        color: #D4AF37 !important; /* Dorado */
+        color: #D4AF37 !important;
         margin-top: 10px;
         font-weight: 500;
         letter-spacing: 2px;
         text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
     }}
 
-    /* ==========================================
-       TARJETAS CLARAS (Fondo claro, texto negro)
-       ========================================== */
     .card-light {{
         background: #FDFBF7 !important;
         border: 1px solid rgba(212, 175, 55, 0.4);
@@ -71,15 +66,12 @@ st.markdown(f"""
         margin-bottom: 25px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }}
-    
-    /* FORZAR TEXTO NEGRO EN TODO LO QUE ESTÉ DENTRO DE CARD-LIGHT */
     .card-light *, 
     .card-light p, .card-light span, .card-light div, .card-light strong, .card-light li,
     .card-light h1, .card-light h2, .card-light h3, .card-light h4 {{
         color: #1A1A1A !important;
     }}
 
-    /* Tarjeta especial para el versículo del inicio */
     .verse-light {{
         background: #FDFBF7 !important;
         border-left: 5px solid #D4AF37;
@@ -105,14 +97,11 @@ st.markdown(f"""
         font-size: 0.9rem;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: #D4AF37 !important; /* Dorado para la referencia */
+        color: #D4AF37 !important;
         font-weight: 600;
         text-align: center;
     }}
 
-    /* ==========================================
-       TARJETAS OSCURAS (Fondo oscuro, texto blanco)
-       ========================================== */
     .card-dark {{
         background: rgba(30, 20, 15, 0.85) !important;
         backdrop-filter: blur(10px);
@@ -122,16 +111,14 @@ st.markdown(f"""
         margin-bottom: 25px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }}
-    /* Forzar texto blanco dentro de tarjetas oscuras */
     .card-dark p, .card-dark span, .card-dark div, .card-dark li {{
         color: #FDFBF7 !important;
     }}
 
-    /* Títulos de sección */
     .section-header {{
         font-size: 1.4rem;
         font-weight: 600;
-        color: #FDFBF7 !important; /* Blanco sobre el fondo */
+        color: #FDFBF7 !important;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
@@ -139,10 +126,9 @@ st.markdown(f"""
         text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
     }}
 
-    /* Botones del menú principal */
     .stButton>button {{
-        background: #FDFBF7 !important; /* Fondo claro */
-        color: #1A1A1A !important; /* Texto negro */
+        background: #FDFBF7 !important;
+        color: #1A1A1A !important;
         border: 1px solid rgba(212, 175, 55, 0.5);
         border-radius: 12px;
         padding: 18px 20px;
@@ -166,7 +152,6 @@ st.markdown(f"""
         margin: 0;
     }}
 
-    /* Muro de miembros (dentro de tarjeta clara) */
     .member-row {{
         display: flex;
         justify-content: space-between;
@@ -191,7 +176,6 @@ st.markdown(f"""
         border: 1px solid rgba(212, 175, 55, 0.4);
     }}
 
-    /* Botón de donación */
     .stButton>button[kind="primary"] {{
         background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
         color: #1A0F0A !important;
@@ -209,10 +193,6 @@ st.markdown(f"""
         color: #1A0F0A !important;
     }}
     
-    /* ==========================================
-       FORZAR COLOR NEGRO EN COMPONENTES DE STREAMLIT
-       ========================================== */
-    /* Expanders (Curiosidades) */
     .streamlit-expanderHeader {{
         color: #1A1A1A !important;
         background-color: #FDFBF7 !important;
@@ -229,9 +209,8 @@ st.markdown(f"""
         color: #1A1A1A !important;
     }}
     
-    /* Selectbox y Number Input (Biblia) */
     .stSelectbox label, .stNumberInput label {{
-        color: #FDFBF7 !important; /* Blanco porque la etiqueta va sobre el fondo */
+        color: #FDFBF7 !important;
     }}
     .stSelectbox div[data-baseweb="select"] > div,
     .stNumberInput input {{
@@ -279,7 +258,6 @@ def mostrar_inicio():
     col_izq, col_der = st.columns([2.2, 1], gap="large")
 
     with col_izq:
-        # Versículo del día (Tarjeta Clara)
         st.markdown("""
         <div class="verse-light">
             <div class="verse-text">"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."</div>
@@ -287,7 +265,6 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-        # Oración (Tarjeta Clara)
         st.markdown('<div class="section-header">🙏 Oración de la Mañana</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light">
@@ -325,7 +302,6 @@ def mostrar_inicio():
                 cambiar_pagina("favoritos")
 
     with col_der:
-        # Muro de miembros (Tarjeta Clara)
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 25px;">
@@ -351,7 +327,6 @@ def mostrar_inicio():
             st.info("Redirigiendo a Ko-fi... (Aquí irá tu enlace)")
 
         st.markdown("<br>", unsafe_allow_html=True)
-        # Mensaje final (Tarjeta Oscura para contraste)
         st.markdown("""
         <div class="card-dark" style="padding: 20px; text-align: center;">
             <p style="color: #D4AF37 !important; font-size: 0.9rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
@@ -413,10 +388,8 @@ def mostrar_biblia():
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
                 for i, texto in enumerate(versiculos_texto, start=1):
-                    # El número de versículo en dorado, el texto negro
                     texto_html += f'<p><strong style="color: #D4AF37 !important;">{i}.</strong> {texto}</p>'
                 
-                # Usamos la tarjeta clara para la Biblia
                 st.markdown(f"""
                 <div class="card-light" style="max-height: 600px; overflow-y: auto;">
                     {texto_html}
@@ -426,7 +399,7 @@ def mostrar_biblia():
         st.error(f"No se pudo cargar el capítulo. Verifica tu conexión o intenta con otro capítulo. (Error: {e})")
 
 
-# --- PÁGINA: CURIOSIDADES (Datos Históricos y Arqueológicos) ---
+# --- PÁGINA: CURIOSIDADES (Datos Históricos y Arqueológicos COMPLETOS) ---
 def mostrar_curiosidades():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -437,56 +410,103 @@ def mostrar_curiosidades():
 
     curiosidades = [
         {
-            "titulo": "📜 La Estela de Merneptah",
-            "que_es": "Una losa de granito negro descubierta en 1896 en Tebas, Egipto.",
-            "importancia": "Contiene la primera mención conocida de 'Israel' fuera de la Biblia. El faraón Merneptah (c. 1209 a.C.) se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época.",
+            "titulo": "📜 La Estela de Merneptah (Primera mención de Israel)",
+            "que_es": "Una losa de granito negro descubierta en 1896 en Tebas, Egipto. Data aproximadamente del 1205 a.C.",
+            "importancia": "Contiene la primera mención conocida de 'Israel' fuera de la Biblia. El faraón Merneptah se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época [citation:19].",
             "referencia": "Éxodo y Josué (la conquista de la Tierra Prometida)."
         },
         {
-            "titulo": "🏺 El Cilindro de Ciro",
-            "que_es": "Un cilindro de arcilla con inscripciones en acadio, encontrado en Babilonia (actual Irak).",
-            "importancia": "Documenta la conquista de Babilonia por Ciro el Grande y su política de permitir a los pueblos deportados regresar a sus tierras. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén.",
+            "titulo": "🏺 El Cilindro de Ciro (El decreto de repatriación)",
+            "que_es": "Un cilindro de arcilla con inscripciones en acadio, encontrado en Sippar, cerca de Bagdad (Irak).",
+            "importancia": "Documenta la conquista de Babilonia por Ciro el Grande y su política de permitir a los pueblos deportados regresar a sus tierras. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén [citation:13].",
             "referencia": "Esdras 1:1-4; Isaías 44:28–45:1."
         },
         {
-            "titulo": "📜 Los Rollos del Mar Muerto",
+            "titulo": "📜 Los Rollos del Mar Muerto (Los manuscritos más antiguos)",
             "que_es": "Miles de fragmentos de manuscritos descubiertos en cuevas cerca de Qumrán, a orillas del Mar Muerto, a partir de 1947.",
-            "importancia": "Son los manuscritos bíblicos más antiguos conocidos (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años.",
+            "importancia": "Son los manuscritos bíblicos más antiguos conocidos (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años. El Rollo de Isaías (7,34 m) es la copia más antigua de un texto bíblico completo jamás hallada [citation:16].",
             "referencia": "Dato curioso: El fragmento más antiguo de Génesis 1:1 fue encontrado entre estos rollos."
         },
         {
             "titulo": "💧 El Túnel de Ezequías (Piscina de Siloé)",
-            "que_es": "Un túnel de 533 metros excavado en roca sólida bajo Jerusalén.",
-            "importancia": "Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. Una inscripción antigua (la Inscripción de Siloé) describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías.",
+            "que_es": "Un túnel de 533 metros excavado en roca sólida bajo Jerusalén hace más de 2.700 años.",
+            "importancia": "Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. La Inscripción de Siloé, encontrada dentro, describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías [citation:16][citation:17].",
             "referencia": "2 Reyes 20:20; 2 Crónicas 32:30."
         },
         {
-            "titulo": "👑 La Estela de Tel Dan (Casa de David)",
+            "titulo": "👑 La Estela de Tel Dan (La Casa de David)",
             "que_es": "Fragmentos de una estela de basalto encontrados en el norte de Israel en 1993 y 1994.",
-            "importancia": "Contiene la frase 'Casa de David' (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia.",
-            "referencia": "1 Samuel 16–2 Samuel 5."
+            "importancia": "Contiene la frase 'Casa de David' (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia. También registra las muertes de los reyes Joram de Israel y Ocozías de Judá [citation:16][citation:19].",
+            "referencia": "1 Samuel 16–2 Samuel 5; 2 Reyes 9."
         },
         {
             "titulo": "🗿 La Estela de Mesa (Piedra Moabita)",
-            "que_es": "Una piedra de basalto negro de casi un metro de altura, descubierta en 1868 en Jordania. Se conserva en el Museo del Louvre.",
-            "importancia": "El rey Mesa de Moab narra su rebelión contra Israel, coincidiendo con el relato bíblico de 2 Reyes 3. Menciona al 'Dios de Israel' y confirma detalles históricos sobre la ocupación israelita de Moab.",
+            "que_es": "Una losa de basalto negro de 1,15 m de altura, descubierta en 1868 en Jordania. Se conserva en el Museo del Louvre.",
+            "importancia": "El rey Mesa de Moab narra su rebelión contra Israel, coincidiendo con el relato bíblico de 2 Reyes 3. Menciona el nombre de Yahvé y la 'Casa de David', confirmando detalles históricos sobre la ocupación israelita de Moab [citation:16].",
             "referencia": "2 Reyes 1:1; 3:4-27."
         },
         {
-            "titulo": "🏛️ Las Tablillas de Ebla",
+            "titulo": "🏛️ Las Tablillas de Ebla (El mundo de los patriarcas)",
             "que_es": "Miles de tablillas de arcilla con escritura cuneiforme encontradas en la antigua ciudad de Ebla, Siria, en la década de 1970.",
-            "importancia": "Contienen nombres y costumbres que se mencionan en Génesis (como las ciudades de Ur y Sodoma), demostrando que el mundo patriarcal descrito en la Biblia era históricamente real y no una invención posterior.",
+            "importancia": "Contienen nombres y costumbres que se mencionan en Génesis (como las ciudades de Ur y Sodoma), demostrando que el mundo patriarcal descrito en la Biblia era históricamente real y no una invención posterior. Muestran que la escritura existía 1.000 años antes de Moisés en la misma región [citation:2][citation:9].",
             "referencia": "Génesis 11–50."
         },
         {
             "titulo": "🏺 El Rey Belsasar (Daniel 5)",
             "que_es": "Durante mucho tiempo, los críticos negaron la existencia de Belsasar porque no aparecía en fuentes fuera de la Biblia.",
-            "importancia": "Hallazgos posteriores en tablillas babilónicas demostraron que Belsasar era el hijo de Nabonido y corregente de Babilonia, exactamente como lo describe Daniel 5. Esto explica por qué Daniel fue ofrecido como 'tercer gobernante' del reino.",
+            "importancia": "Hallazgos posteriores en tablillas babilónicas demostraron que Belsasar era el hijo de Nabonido y corregente de Babilonia, exactamente como lo describe Daniel 5. Esto explica por qué Daniel fue ofrecido como 'tercer gobernante' del reino [citation:9][citation:10].",
             "referencia": "Daniel 5:16, 29-31."
+        },
+        {
+            "titulo": "📜 Las Cartas de Lachis (La caída de Judá)",
+            "que_es": "Fragmentos de cerámica (ostraca) con inscripciones en hebreo antiguo, encontrados en las ruinas de Lachis, una ciudad fortificada de Judá.",
+            "importancia": "Son una correspondencia militar de la época del profeta Jeremías (principios del siglo VI a.C.). En una de ellas se lee: 'No podemos ver las señales de Azeca', lo que coincide con el avance de Nabucodonosor descrito en Jeremías 34:7. Confirman la realidad histórica de la invasión babilónica [citation:6].",
+            "referencia": "Jeremías 34:7."
+        },
+        {
+            "titulo": "🏛️ El Sello del Rey Ezequías",
+            "que_es": "Una impresión de arcilla (bula) de solo 1 cm de diámetro, encontrada en 2015 en Jerusalén.",
+            "importancia": "Lleva la inscripción: 'Perteneciente a Ezequías, hijo de Acaz, rey de Judá', con un símbolo solar con alas. Es prueba física del reinado de uno de los reyes más importantes del Antiguo Testamento [citation:16].",
+            "referencia": "2 Reyes 18-20; Isaías 36-39."
+        },
+        {
+            "titulo": "🏺 Los Heteos (Un pueblo que se creía legendario)",
+            "que_es": "Los hititas son mencionados en varios libros del Antiguo Testamento, pero los críticos los consideraban una 'leyenda bíblica'.",
+            "importancia": "Los arqueólogos encontraron la capital hitita en Bogazkoy, Turquía, repleta de registros de su pueblo. Esto confirmó que los hititas fueron una civilización real y poderosa, tal como la Biblia los describe [citation:9].",
+            "referencia": "Génesis 23; 2 Samuel 11; 1 Reyes 10."
+        },
+        {
+            "titulo": "🌿 El Jardín bajo el Santo Sepulcro (Descubrimiento 2025)",
+            "que_es": "Excavaciones recientes bajo la Basílica del Santo Sepulcro en Jerusalén han revelado un antiguo jardín con restos de trigo, uvas e higos.",
+            "importancia": "El Evangelio de Juan dice que Jesús fue crucificado y sepultado en un huerto. Los análisis arqueobotánicos confirman la existencia de un área cultivada entre el Calvario y la tumba, coincidiendo con el relato bíblico. Es uno de los hallazgos más recientes y fascinantes [citation:3][citation:11].",
+            "referencia": "Juan 19:41-42."
+        },
+        {
+            "titulo": "🏛️ La Inscripción de Poncio Pilato",
+            "que_es": "Una piedra caliza con una inscripción en latín, encontrada en Cesarea Marítima en 1961.",
+            "importancia": "Contiene el nombre de 'Poncio Pilato, prefecto de Judea'. Es la única evidencia arqueológica directa de la existencia del gobernador romano que condenó a Jesús, mencionado en los cuatro evangelios [citation:8].",
+            "referencia": "Mateo 27; Marcos 15; Lucas 23; Juan 18-19."
+        },
+        {
+            "titulo": "🦴 El Osario de Caifás",
+            "que_es": "Un osario de piedra caliza con la inscripción 'José, hijo de Caifás', encontrado en Jerusalén en 1990.",
+            "importancia": "Es la primera evidencia arqueológica del sumo sacerdote Caifás, quien presidió el juicio contra Jesús. Confirma la existencia de uno de los personajes clave de la Pasión [citation:8].",
+            "referencia": "Mateo 26:57; Juan 18:13."
+        },
+        {
+            "titulo": "📜 El Papiro 52 (El fragmento más antiguo del Nuevo Testamento)",
+            "que_es": "Un pequeño fragmento de papiro del Evangelio de Juan, datado alrededor del año 125 d.C.",
+            "importancia": "Es el fragmento más antiguo conocido del Nuevo Testamento. Contiene partes de Juan 18:31-33 y 37-38. Su antigüedad demuestra que el Evangelio de Juan ya circulaba pocas décadas después de la muerte de Jesús [citation:8].",
+            "referencia": "Juan 18."
+        },
+        {
+            "titulo": "🏺 El Obelisco Negro de Salmanasar III",
+            "que_es": "Un obelisco asirio del siglo IX a.C. que muestra al rey Jehú de Israel pagando tributo.",
+            "importancia": "Es la primera representación conocida de un rey israelita en el arte antiguo. Confirma la existencia de Jehú y las relaciones entre Israel y Asiria descritas en 2 Reyes [citation:17].",
+            "referencia": "2 Reyes 9-10."
         }
     ]
 
-    # Mostrar cada curiosidad en un expander (pestaña desplegable)
     for c in curiosidades:
         with st.expander(c["titulo"]):
             st.markdown(f"""
@@ -501,7 +521,7 @@ def mostrar_curiosidades():
     st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="card-dark">
-        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras. Como dijo el arqueólogo Joseph Free: "La arqueología ha confirmado incontables pasajes que los críticos habían rechazado como no históricos".</p>
+        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras. Como dijo el arqueólogo Joseph Free: "La arqueología ha confirmado incontables pasajes que los críticos habían rechazado como no históricos" [citation:2].</p>
     </div>
     """, unsafe_allow_html=True)
 
