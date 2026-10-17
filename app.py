@@ -332,7 +332,6 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-        # MENSAJE Y ENLACE DE DONACIÓN
         st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
@@ -348,10 +347,14 @@ def mostrar_inicio():
         """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
+        # SECCIÓN DE CRÉDITOS ACTUALIZADA
         st.markdown("""
-        <div class="card-dark" style="padding: 20px; text-align: center;">
-            <p style="color: #D4AF37 !important; font-size: 0.9rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
-            <p style="font-size: 0.8rem; margin-top: 8px;">Mantenida por donaciones</p>
+        <div class="card-dark" style="padding: 25px; text-align: center;">
+            <p style="color: #D4AF37 !important; font-size: 1rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
+            <p style="font-size: 0.85rem; margin-top: 8px; margin-bottom: 15px;">Mantenida por donaciones</p>
+            <hr style="border-color: rgba(212, 175, 55, 0.3); margin: 15px 0;">
+            <p style="font-size: 0.8rem; margin: 0; color: #FDFBF7 !important;">Esta app fue creada por <strong>Willian Almenar</strong>.</p>
+            <p style="font-size: 0.75rem; margin: 5px 0 0 0; color: #B0A090 !important;">Todos los derechos reservados. Octubre 2026.</p>
         </div>
         """, unsafe_allow_html=True)
 
