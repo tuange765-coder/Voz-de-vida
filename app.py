@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ============================================
-# ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE)
+# ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE FORZADO)
 # ============================================
 IMG_URL = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop"
 
@@ -71,8 +71,11 @@ st.markdown(f"""
         margin-bottom: 25px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }}
-    /* Forzar texto negro dentro de tarjetas claras */
-    .card-light p, .card-light span, .card-light div, .card-light strong, .card-light li {{
+    
+    /* FORZAR TEXTO NEGRO EN TODO LO QUE ESTÉ DENTRO DE CARD-LIGHT */
+    .card-light *, 
+    .card-light p, .card-light span, .card-light div, .card-light strong, .card-light li,
+    .card-light h1, .card-light h2, .card-light h3, .card-light h4 {{
         color: #1A1A1A !important;
     }}
 
@@ -85,12 +88,14 @@ st.markdown(f"""
         margin: 20px 0 40px 0;
         box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }}
+    .verse-light * {{
+        color: #1A1A1A !important;
+    }}
     .verse-light .verse-text {{
         font-family: 'Cormorant Garamond', serif;
         font-size: 1.8rem;
         font-style: italic;
         line-height: 1.5;
-        color: #1A1A1A !important; /* Texto negro */
         text-align: center;
     }}
     .verse-light .verse-ref {{
@@ -100,7 +105,7 @@ st.markdown(f"""
         font-size: 0.9rem;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: #D4AF37 !important;
+        color: #D4AF37 !important; /* Dorado para la referencia */
         font-weight: 600;
         text-align: center;
     }}
@@ -204,14 +209,39 @@ st.markdown(f"""
         color: #1A0F0A !important;
     }}
     
-    /* Estilo para listas dentro de tarjetas */
-    .card-light ul, .card-dark ul {{
-        margin-top: 10px;
-        padding-left: 20px;
+    /* ==========================================
+       FORZAR COLOR NEGRO EN COMPONENTES DE STREAMLIT
+       ========================================== */
+    /* Expanders (Curiosidades) */
+    .streamlit-expanderHeader {{
+        color: #1A1A1A !important;
+        background-color: #FDFBF7 !important;
+        border-radius: 10px;
+        font-weight: 600;
     }}
-    .card-light li, .card-dark li {{
-        margin-bottom: 10px;
-        line-height: 1.6;
+    .streamlit-expanderContent {{
+        background-color: #FDFBF7 !important;
+        color: #1A1A1A !important;
+        border-radius: 0 0 10px 10px;
+        padding: 15px;
+    }}
+    .streamlit-expanderContent * {{
+        color: #1A1A1A !important;
+    }}
+    
+    /* Selectbox y Number Input (Biblia) */
+    .stSelectbox label, .stNumberInput label {{
+        color: #FDFBF7 !important; /* Blanco porque la etiqueta va sobre el fondo */
+    }}
+    .stSelectbox div[data-baseweb="select"] > div,
+    .stNumberInput input {{
+        background-color: #FDFBF7 !important;
+        color: #1A1A1A !important;
+        border-radius: 8px;
+    }}
+    .stSelectbox div[data-baseweb="select"] *,
+    .stNumberInput input {{
+        color: #1A1A1A !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -383,6 +413,7 @@ def mostrar_biblia():
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
                 for i, texto in enumerate(versiculos_texto, start=1):
+                    # El número de versículo en dorado, el texto negro
                     texto_html += f'<p><strong style="color: #D4AF37 !important;">{i}.</strong> {texto}</p>'
                 
                 # Usamos la tarjeta clara para la Biblia
@@ -404,7 +435,6 @@ def mostrar_curiosidades():
     st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Lista de curiosidades para organizar en expanders
     curiosidades = [
         {
             "titulo": "📜 La Estela de Merneptah",
