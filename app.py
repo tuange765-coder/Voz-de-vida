@@ -6,7 +6,7 @@ import requests
 # CONFIGURACIÓN
 # ============================================
 st.set_page_config(
-    page_title="La Palabra | App Cristiana",
+    page_title="Palabra de Vida | App Cristiana",
     page_icon="✝️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -196,7 +196,7 @@ def cambiar_pagina(nombre_pagina):
 # ============================================
 login_obj = __login__(
     auth_token=st.secrets["courier_auth_token"],
-    company_name="La Palabra",
+    company_name="Palabra de Vida",
     width=250,
     height=300
 )
@@ -207,7 +207,7 @@ LOGGED_IN = login_obj.build_login_ui()
 # ============================================
 
 def mostrar_inicio():
-    st.markdown('<h1 class="hero-title">La Palabra</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="hero-title">Palabra de Vida</h1>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle">LÁMPARA ES A MIS PIES TU PALABRA</p>', unsafe_allow_html=True)
     st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -290,7 +290,7 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-# --- PÁGINA: BIBLIA (Bible API - Reina Valera 1960) ---
+# --- PÁGINA: BIBLIA (Midvash API - RVR1960) ---
 def mostrar_biblia():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -329,15 +329,16 @@ def mostrar_biblia():
         capitulo_sel = st.number_input("Capítulo", min_value=1, max_value=150, value=3)
     
     slug = slugs.get(libro_sel, "john")
-    # Usamos bible-api.com con la versión Reina Valera (rvr)
-    url = f"https://bible-api.com/{slug}+{capitulo_sel}?translation=rvr"
+    # Midvash API con RVR1960
+    url = f"https://api.midvash.com/v1/rvr1960/{slug}/{capitulo_sel}"
     
     try:
         with st.spinner("Cargando la Palabra..."):
             respuesta = requests.get(url)
             respuesta.raise_for_status()
             datos = respuesta.json()
-            versiculos = datos.get("verses", [])
+            # Midvash devuelve los versículos en data.verses
+            versiculos = datos.get("data", {}).get("verses", [])
             
             if not versiculos:
                 st.warning("No se encontraron versículos para esta selección.")
