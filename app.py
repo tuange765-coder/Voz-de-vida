@@ -404,55 +404,68 @@ def mostrar_curiosidades():
     st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 1. Estela de Merneptah
-    st.markdown("""
-    <div class="card-light">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">📜 La Estela de Merneptah</h3>
-        <p><strong>¿Qué es?</strong> Una losa de granito negro descubierta en 1896 en Tebas, Egipto.</p>
-        <p><strong>¿Por qué es importante?</strong> Contiene la <strong>primera mención conocida de "Israel"</strong> fuera de la Biblia. El faraón Merneptah (c. 1209 a.C.) se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época.</p>
-        <p><strong>Referencia bíblica:</strong> Éxodo y Josué (la conquista de la Tierra Prometida).</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Lista de curiosidades para organizar en expanders
+    curiosidades = [
+        {
+            "titulo": "📜 La Estela de Merneptah",
+            "que_es": "Una losa de granito negro descubierta en 1896 en Tebas, Egipto.",
+            "importancia": "Contiene la primera mención conocida de 'Israel' fuera de la Biblia. El faraón Merneptah (c. 1209 a.C.) se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época.",
+            "referencia": "Éxodo y Josué (la conquista de la Tierra Prometida)."
+        },
+        {
+            "titulo": "🏺 El Cilindro de Ciro",
+            "que_es": "Un cilindro de arcilla con inscripciones en acadio, encontrado en Babilonia (actual Irak).",
+            "importancia": "Documenta la conquista de Babilonia por Ciro el Grande y su política de permitir a los pueblos deportados regresar a sus tierras. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén.",
+            "referencia": "Esdras 1:1-4; Isaías 44:28–45:1."
+        },
+        {
+            "titulo": "📜 Los Rollos del Mar Muerto",
+            "que_es": "Miles de fragmentos de manuscritos descubiertos en cuevas cerca de Qumrán, a orillas del Mar Muerto, a partir de 1947.",
+            "importancia": "Son los manuscritos bíblicos más antiguos conocidos (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años.",
+            "referencia": "Dato curioso: El fragmento más antiguo de Génesis 1:1 fue encontrado entre estos rollos."
+        },
+        {
+            "titulo": "💧 El Túnel de Ezequías (Piscina de Siloé)",
+            "que_es": "Un túnel de 533 metros excavado en roca sólida bajo Jerusalén.",
+            "importancia": "Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. Una inscripción antigua (la Inscripción de Siloé) describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías.",
+            "referencia": "2 Reyes 20:20; 2 Crónicas 32:30."
+        },
+        {
+            "titulo": "👑 La Estela de Tel Dan (Casa de David)",
+            "que_es": "Fragmentos de una estela de basalto encontrados en el norte de Israel en 1993 y 1994.",
+            "importancia": "Contiene la frase 'Casa de David' (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia.",
+            "referencia": "1 Samuel 16–2 Samuel 5."
+        },
+        {
+            "titulo": "🗿 La Estela de Mesa (Piedra Moabita)",
+            "que_es": "Una piedra de basalto negro de casi un metro de altura, descubierta en 1868 en Jordania. Se conserva en el Museo del Louvre.",
+            "importancia": "El rey Mesa de Moab narra su rebelión contra Israel, coincidiendo con el relato bíblico de 2 Reyes 3. Menciona al 'Dios de Israel' y confirma detalles históricos sobre la ocupación israelita de Moab.",
+            "referencia": "2 Reyes 1:1; 3:4-27."
+        },
+        {
+            "titulo": "🏛️ Las Tablillas de Ebla",
+            "que_es": "Miles de tablillas de arcilla con escritura cuneiforme encontradas en la antigua ciudad de Ebla, Siria, en la década de 1970.",
+            "importancia": "Contienen nombres y costumbres que se mencionan en Génesis (como las ciudades de Ur y Sodoma), demostrando que el mundo patriarcal descrito en la Biblia era históricamente real y no una invención posterior.",
+            "referencia": "Génesis 11–50."
+        },
+        {
+            "titulo": "🏺 El Rey Belsasar (Daniel 5)",
+            "que_es": "Durante mucho tiempo, los críticos negaron la existencia de Belsasar porque no aparecía en fuentes fuera de la Biblia.",
+            "importancia": "Hallazgos posteriores en tablillas babilónicas demostraron que Belsasar era el hijo de Nabonido y corregente de Babilonia, exactamente como lo describe Daniel 5. Esto explica por qué Daniel fue ofrecido como 'tercer gobernante' del reino.",
+            "referencia": "Daniel 5:16, 29-31."
+        }
+    ]
 
-    # 2. Cilindro de Ciro
-    st.markdown("""
-    <div class="card-light">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">🏺 El Cilindro de Ciro</h3>
-        <p><strong>¿Qué es?</strong> Un cilindro de arcilla con inscripciones en acadio, encontrado en Babilonia (actual Irak).</p>
-        <p><strong>¿Por qué es importante?</strong> Documenta la conquista de Babilonia por Ciro el Grande y su política de <strong>permitir a los pueblos deportados regresar a sus tierras</strong>. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén.</p>
-        <p><strong>Referencia bíblica:</strong> Esdras 1:1-4; Isaías 44:28–45:1.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 3. Rollos del Mar Muerto
-    st.markdown("""
-    <div class="card-light">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">📜 Los Rollos del Mar Muerto</h3>
-        <p><strong>¿Qué son?</strong> Miles de fragmentos de manuscritos descubiertos en cuevas cerca de Qumrán, a orillas del Mar Muerto, a partir de 1947.</p>
-        <p><strong>¿Por qué son importantes?</strong> Son los <strong>manuscritos bíblicos más antiguos conocidos</strong> (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años.</p>
-        <p><strong>Dato curioso:</strong> El fragmento más antiguo de Génesis 1:1 fue encontrado entre estos rollos.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 4. El Túnel de Ezequías (o Siloé)
-    st.markdown("""
-    <div class="card-light">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">💧 El Túnel de Ezequías</h3>
-        <p><strong>¿Qué es?</strong> Un túnel de 533 metros excavado en roca sólida bajo Jerusalén.</p>
-        <p><strong>¿Por qué es importante?</strong> Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. Una inscripción antigua (la Inscripción de Siloé) describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías.</p>
-        <p><strong>Referencia bíblica:</strong> 2 Reyes 20:20; 2 Crónicas 32:30.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 5. La Casa de David (Estela de Tel Dan)
-    st.markdown("""
-    <div class="card-light">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1A1A1A !important; margin-bottom: 10px;">👑 La Estela de Tel Dan</h3>
-        <p><strong>¿Qué es?</strong> Fragmentos de una estela de basalto encontrados en el norte de Israel en 1993 y 1994.</p>
-        <p><strong>¿Por qué es importante?</strong> Contiene la frase <strong>"Casa de David"</strong> (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia.</p>
-        <p><strong>Referencia bíblica:</strong> 1 Samuel 16–2 Samuel 5.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Mostrar cada curiosidad en un expander (pestaña desplegable)
+    for c in curiosidades:
+        with st.expander(c["titulo"]):
+            st.markdown(f"""
+            <div class="card-light" style="margin-top: 10px;">
+                <p><strong>¿Qué es?</strong> {c['que_es']}</p>
+                <p><strong>¿Por qué es importante?</strong> {c['importancia']}</p>
+                <p><strong>Referencia bíblica:</strong> {c['referencia']}</p>
+            </div>
+            """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
