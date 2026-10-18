@@ -8,7 +8,7 @@ import urllib.parse
 # ============================================
 st.set_page_config(
     page_title="Palabra de Vida | App Cristiana",
-    page_icon="logo.png",  # <-- Tu logo personalizado
+    page_icon="palabra-de-vida.png",  # <-- AQUÍ ESTÁ EL NOMBRE CORRECTO
     layout="wide",
     initial_sidebar_state="expanded"
 )
