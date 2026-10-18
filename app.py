@@ -28,7 +28,7 @@ if not MODO_DEMO:
         st.stop()
 
 # ============================================
-# 3. ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE)
+# 3. ESTILOS PROFESIONALES Y OCULTAMIENTO DE SIDEBAR
 # ============================================
 IMG_URL = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop"
 
@@ -47,6 +47,10 @@ st.markdown(f"""
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
     header {{visibility: hidden;}}
+
+    /* OCULTAR LA BARRA LATERAL COMPLETA PARA LOS USUARIOS */
+    [data-testid="collapsedControl"] {{display: none;}}
+    section[data-testid="stSidebar"] {{display: none;}}
 
     h1, h2, h3 {{
         font-family: 'Cormorant Garamond', serif;
@@ -152,7 +156,7 @@ st.markdown(f"""
         font-size: 0.95rem;
         transition: all 0.3s ease;
         width: 100%;
-        text-align: left;
+        text-align: center;
     }}
     .stButton>button:hover {{
         background: #F3E5AB !important;
@@ -285,7 +289,7 @@ def obtener_video_id(url):
         return url.split("youtu.be/")[1].split("?")[0]
     return url
 
-# La barra lateral SOLO tiene el acceso de administrador
+# La barra lateral está OCULTA por CSS, pero el código del admin sigue ahí para que tú entres.
 with st.sidebar:
     st.markdown("### 🔐 Acceso Administrador")
     if not st.session_state.admin_logged:
@@ -335,7 +339,7 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-        # 3. APOYAR LA OBRA (Movido aquí, después de la oración)
+        # 3. APOYAR LA OBRA
         st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
@@ -358,7 +362,7 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 4. REPRODUCTOR DE MÚSICA
+        # 4. REPRODUCTOR DE MÚSICA (Movido aquí a la izquierda)
         st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
         
@@ -388,7 +392,7 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN (Una al lado de la otra)
+        # 5. BOTONES DE EXPLORACIÓN
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         b1, b2, b3 = st.columns(3)
@@ -416,7 +420,7 @@ def mostrar_inicio():
                 cambiar_pagina("suenos")
 
     with col_der:
-        # 6. MURO DE MIEMBROS (Se mantiene en la derecha)
+        # 6. MURO DE MIEMBROS
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 25px;">
