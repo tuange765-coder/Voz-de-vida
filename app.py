@@ -316,7 +316,8 @@ if LOGGED_IN:
         if not st.session_state.admin_logged:
             pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
             if st.button("Entrar como Admin", use_container_width=True):
-                if pass_admin == "Willian2026": # Cambia esta contraseña
+                # CONTRASEÑA ACTUALIZADA AQUÍ
+                if pass_admin == "Juan*316*":
                     st.session_state.admin_logged = True
                     st.success("¡Bienvenido, Admin!")
                     st.rerun()
@@ -671,8 +672,7 @@ def mostrar_mitos():
             """, unsafe_allow_html=True)
 
 
-# --- PÁGINA: ADMIN ---
-def mostrar_admin():
+# --- PÁGINA: ADMIN ---def mostrar_admin():
     if not st.session_state.admin_logged:
         st.error("Debes iniciar sesión como administrador para acceder a esta página.")
         if st.button("Volver al Inicio"):
