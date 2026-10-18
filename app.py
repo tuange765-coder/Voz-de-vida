@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_supabase_auth_ui.widgets import __login__
 import requests
 import random
 import urllib.parse
@@ -255,16 +254,6 @@ st.markdown(f"""
 if 'pagina_actual' not in st.session_state:
     st.session_state.pagina_actual = 'inicio'
 
-if 'respuestas_pastor' not in st.session_state:
-    st.session_state.respuestas_pastor = []
-if 'reflexiones' not in st.session_state:
-    st.session_state.reflexiones = []
-if 'curiosidades' not in st.session_state:
-    st.session_state.curiosidades = []
-if 'mitos' not in st.session_state:
-    st.session_state.mitos = []
-if 'suenos' not in st.session_state:
-    st.session_state.suenos = []
 if 'admin_logged' not in st.session_state:
     st.session_state.admin_logged = False
 
@@ -273,66 +262,53 @@ def cambiar_pagina(nombre_pagina):
     st.rerun()
 
 # ============================================
-# 5. LOGIN
-# ============================================
-login_obj = __login__(
-    auth_token=st.secrets["courier_auth_token"],
-    company_name="Palabra de Vida",
-    width=250,
-    height=300
-)
-LOGGED_IN = login_obj.build_login_ui()
-
-# ============================================
-# 6. LÓGICA DE MÚSICA POR URL (EN BARRA LATERAL)
+# 5. LÓGICA DE MÚSICA POR URL (EN BARRA LATERAL)
 # ============================================
 URLS_CANCIONES = [
     "https://TU_ENLACE_1.mp3",
     "https://TU_ENLACE_2.mp3",
 ]
 
-if LOGGED_IN:
-    if 'canciones_url' not in st.session_state:
-        canciones = URLS_CANCIONES.copy()
-        random.shuffle(canciones)
-        st.session_state.canciones_url = canciones
-        st.session_state.indice_url = 0
+if 'canciones_url' not in st.session_state:
+    canciones = URLS_CANCIONES.copy()
+    random.shuffle(canciones)
+    st.session_state.canciones_url = canciones
+    st.session_state.indice_url = 0
 
-    with st.sidebar:
-        st.markdown("### 🎵 Música Cristiana")
-        st.markdown("---")
-        if st.session_state.canciones_url:
-            url_actual = st.session_state.canciones_url[st.session_state.indice_url]
-            st.audio(url_actual, format="audio/mpeg")
-            if st.button("⏭️ Siguiente Canción", use_container_width=True):
-                st.session_state.indice_url = (st.session_state.indice_url + 1) % len(st.session_state.canciones_url)
+with st.sidebar:
+    st.markdown("### 🎵 Música Cristiana")
+    st.markdown("---")
+    if st.session_state.canciones_url:
+        url_actual = st.session_state.canciones_url[st.session_state.indice_url]
+        st.audio(url_actual, format="audio/mpeg")
+        if st.button("⏭️ Siguiente Canción", use_container_width=True):
+            st.session_state.indice_url = (st.session_state.indice_url + 1) % len(st.session_state.canciones_url)
+            st.rerun()
+        st.caption(f"Canción {st.session_state.indice_url + 1} de {len(st.session_state.canciones_url)}")
+    else:
+        st.info("No hay canciones configuradas.")
+    
+    st.markdown("---")
+    st.markdown("### 🔐 Acceso Administrador")
+    if not st.session_state.admin_logged:
+        pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
+        if st.button("Entrar como Admin", use_container_width=True):
+            if pass_admin == "Juan*316*":
+                st.session_state.admin_logged = True
+                st.success("¡Bienvenido, Admin!")
                 st.rerun()
-            st.caption(f"Canción {st.session_state.indice_url + 1} de {len(st.session_state.canciones_url)}")
-        else:
-            st.info("No hay canciones configuradas.")
-        
-        st.markdown("---")
-        st.markdown("### 🔐 Acceso Administrador")
-        if not st.session_state.admin_logged:
-            pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
-            if st.button("Entrar como Admin", use_container_width=True):
-                # CONTRASEÑA ACTUALIZADA AQUÍ
-                if pass_admin == "Juan*316*":
-                    st.session_state.admin_logged = True
-                    st.success("¡Bienvenido, Admin!")
-                    st.rerun()
-                else:
-                    st.error("Contraseña incorrecta")
-        else:
-            st.success("Sesión de Admin activa")
-            if st.button("Cerrar Sesión Admin", use_container_width=True):
-                st.session_state.admin_logged = False
-                st.rerun()
-            if st.button("Ir al Panel de Administrador", use_container_width=True):
-                cambiar_pagina("admin")
+            else:
+                st.error("Contraseña incorrecta")
+    else:
+        st.success("Sesión de Admin activa")
+        if st.button("Cerrar Sesión Admin", use_container_width=True):
+            st.session_state.admin_logged = False
+            st.rerun()
+        if st.button("Ir al Panel de Administrador", use_container_width=True):
+            cambiar_pagina("admin")
 
 # ============================================
-# 7. FUNCIONES DE LAS PÁGINAS
+# 6. FUNCIONES DE LAS PÁGINAS
 # ============================================
 
 def mostrar_inicio():
@@ -408,7 +384,6 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-        # --- SECCIÓN DE DONACIONES ACTUALIZADA ---
         st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
@@ -556,30 +531,28 @@ def mostrar_pastor():
             nombre = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
             pregunta = st.text_area("Escribe tu pregunta aquí", placeholder="¿Qué significa...?", height=150)
             
-            submitted = st.form_submit_button("Enviar Pregunta por WhatsApp", type="primary", use_container_width=True)
+            submitted = st.form_submit_button("Enviar Pregunta", type="primary", use_container_width=True)
             
             if submitted:
                 if not pregunta.strip():
                     st.warning("Por favor, escribe una pregunta antes de enviar.")
                 else:
-                    mensaje = f"Hola Pastor, mi nombre es {nombre if nombre else 'un hermano/a'}. Tengo una pregunta: {pregunta}"
-                    mensaje_codificado = urllib.parse.quote(mensaje)
-                    numero_whatsapp = "584242004015"
-                    url_whatsapp = f"https://wa.me/{numero_whatsapp}?text={mensaje_codificado}"
+                    # Guardar en Supabase como pendiente
+                    conn.table("respuestas_pastor").insert({
+                        "pregunta": pregunta,
+                        "respuesta": "PENDIENTE",
+                        "fecha": "Hoy",
+                        "nombre_usuario": nombre if nombre else "Anónimo",
+                        "estado": "pendiente"
+                    }).execute()
                     
-                    st.success("¡Pregunta lista! Haz clic en el botón de abajo para enviarla por WhatsApp.")
-                    st.markdown(f"""
-                    <a href="{url_whatsapp}" target="_blank" style="text-decoration: none;">
-                        <div style="background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; margin-top: 15px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); cursor: pointer;">
-                            📲 Abrir WhatsApp y Enviar
-                        </div>
-                    </a>
-                    """, unsafe_allow_html=True)
+                    st.success("¡Pregunta enviada! El pastor la revisará y publicará una respuesta pronto.")
+                    st.rerun()
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💬 Respuestas del Pastor</div>', unsafe_allow_html=True)
     
-    res = execute_query(conn.table("respuestas_pastor").select("*").order("created_at", desc=True), ttl="1m")
+    res = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="1m")
     data_pastor = res.data
     
     if not data_pastor:
@@ -616,12 +589,21 @@ def mostrar_suenos():
                 if not sueno.strip():
                     st.warning("Por favor, describe tu sueño antes de enviar.")
                 else:
-                    st.success("¡Sueño recibido! El pastor lo revisará y publicará una respuesta pronto.")
+                    conn.table("suenos").insert({
+                        "sueno": sueno,
+                        "interpretacion": "PENDIENTE",
+                        "fecha": "Hoy",
+                        "nombre_usuario": nombre_sueno if nombre_sueno else "Anónimo",
+                        "estado": "pendiente"
+                    }).execute()
+                    
+                    st.success("¡Sueño enviado! El pastor lo revisará y publicará una respuesta pronto.")
+                    st.rerun()
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💬 Interpretaciones publicadas</div>', unsafe_allow_html=True)
     
-    res = execute_query(conn.table("suenos").select("*").order("created_at", desc=True), ttl="1m")
+    res = execute_query(conn.table("suenos").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="1m")
     data_suenos = res.data
     
     if not data_suenos:
@@ -697,7 +679,28 @@ def mostrar_admin():
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños"])
 
     with tab1:
-        st.markdown("### Agregar Respuesta")
+        st.markdown("### Preguntas Pendientes")
+        pendientes = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "pendiente"), ttl="0").data
+        if not pendientes:
+            st.info("No hay preguntas pendientes.")
+        else:
+            for p in pendientes:
+                with st.expander(f"Pregunta de {p.get('nombre_usuario', 'Anónimo')}: {p['pregunta'][:50]}..."):
+                    st.write(f"**Pregunta:** {p['pregunta']}")
+                    respuesta = st.text_area("Tu respuesta", key=f"resp_{p['id']}")
+                    if st.button("Publicar Respuesta", key=f"btn_pub_{p['id']}"):
+                        if respuesta.strip():
+                            conn.table("respuestas_pastor").update({
+                                "respuesta": respuesta,
+                                "estado": "respondido"
+                            }).eq("id", p['id']).execute()
+                            st.success("¡Respuesta publicada!")
+                            st.rerun()
+                        else:
+                            st.warning("Escribe una respuesta antes de publicar.")
+
+        st.markdown("---")
+        st.markdown("### Agregar Respuesta Manual")
         with st.form("admin_pastor"):
             pregunta = st.text_area("Pregunta del usuario", height=80)
             respuesta = st.text_area("Tu respuesta", height=150)
@@ -705,13 +708,18 @@ def mostrar_admin():
             
             if st.form_submit_button("Publicar Respuesta", type="primary", use_container_width=True):
                 if pregunta and respuesta:
-                    conn.table("respuestas_pastor").insert({"pregunta": pregunta, "respuesta": respuesta, "fecha": fecha}).execute()
+                    conn.table("respuestas_pastor").insert({
+                        "pregunta": pregunta, 
+                        "respuesta": respuesta, 
+                        "fecha": fecha,
+                        "estado": "respondido"
+                    }).execute()
                     st.success("¡Respuesta publicada!")
                     st.rerun()
                 else:
                     st.warning("Completa todos los campos.")
 
-        data = execute_query(conn.table("respuestas_pastor").select("*").order("created_at", desc=True), ttl="0").data
+        data = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="0").data
         st.markdown("### Respuestas Publicadas")
         if not data:
             st.info("No hay respuestas publicadas aún.")
@@ -806,7 +814,28 @@ def mostrar_admin():
                         st.rerun()
 
     with tab5:
-        st.markdown("### Agregar Interpretación de Sueño")
+        st.markdown("### Sueños Pendientes")
+        pendientes_suenos = execute_query(conn.table("suenos").select("*").eq("estado", "pendiente"), ttl="0").data
+        if not pendientes_suenos:
+            st.info("No hay sueños pendientes.")
+        else:
+            for s in pendientes_suenos:
+                with st.expander(f"Sueño de {s.get('nombre_usuario', 'Anónimo')}: {s['sueno'][:50]}..."):
+                    st.write(f"**Sueño:** {s['sueno']}")
+                    interpretacion = st.text_area("Interpretación", key=f"interp_{s['id']}")
+                    if st.button("Publicar Interpretación", key=f"btn_interp_{s['id']}"):
+                        if interpretacion.strip():
+                            conn.table("suenos").update({
+                                "interpretacion": interpretacion,
+                                "estado": "respondido"
+                            }).eq("id", s['id']).execute()
+                            st.success("¡Interpretación publicada!")
+                            st.rerun()
+                        else:
+                            st.warning("Escribe una interpretación antes de publicar.")
+
+        st.markdown("---")
+        st.markdown("### Agregar Interpretación Manual")
         with st.form("admin_sueno"):
             sueno = st.text_area("Sueño del usuario", height=100)
             interpretacion = st.text_area("Interpretación bíblica", height=150)
@@ -814,13 +843,18 @@ def mostrar_admin():
             
             if st.form_submit_button("Publicar Interpretación", type="primary", use_container_width=True):
                 if sueno and interpretacion:
-                    conn.table("suenos").insert({"sueno": sueno, "interpretacion": interpretacion, "fecha": fecha_sueno}).execute()
+                    conn.table("suenos").insert({
+                        "sueno": sueno, 
+                        "interpretacion": interpretacion, 
+                        "fecha": fecha_sueno,
+                        "estado": "respondido"
+                    }).execute()
                     st.success("¡Interpretación publicada!")
                     st.rerun()
                 else:
                     st.warning("Completa todos los campos.")
 
-        data = execute_query(conn.table("suenos").select("*").order("created_at", desc=True), ttl="0").data
+        data = execute_query(conn.table("suenos").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="0").data
         st.markdown("### Interpretaciones Publicadas")
         if not data:
             st.info("No hay interpretaciones publicadas aún.")
@@ -836,20 +870,19 @@ def mostrar_admin():
 # ============================================
 # 8. ENRUTADOR PRINCIPAL
 # ============================================
-if LOGGED_IN:
-    if st.session_state.pagina_actual == 'inicio':
-        mostrar_inicio()
-    elif st.session_state.pagina_actual == 'biblia':
-        mostrar_biblia()
-    elif st.session_state.pagina_actual == 'curiosidades':
-        mostrar_curiosidades()
-    elif st.session_state.pagina_actual == 'pastor':
-        mostrar_pastor()
-    elif st.session_state.pagina_actual == 'suenos':
-        mostrar_suenos()
-    elif st.session_state.pagina_actual == 'reflexiones':
-        mostrar_reflexiones()
-    elif st.session_state.pagina_actual == 'mitos':
-        mostrar_mitos()
-    elif st.session_state.pagina_actual == 'admin':
-        mostrar_admin()
+if st.session_state.pagina_actual == 'inicio':
+    mostrar_inicio()
+elif st.session_state.pagina_actual == 'biblia':
+    mostrar_biblia()
+elif st.session_state.pagina_actual == 'curiosidades':
+    mostrar_curiosidades()
+elif st.session_state.pagina_actual == 'pastor':
+    mostrar_pastor()
+elif st.session_state.pagina_actual == 'suenos':
+    mostrar_suenos()
+elif st.session_state.pagina_actual == 'reflexiones':
+    mostrar_reflexiones()
+elif st.session_state.pagina_actual == 'mitos':
+    mostrar_mitos()
+elif st.session_state.pagina_actual == 'admin':
+    mostrar_admin()
