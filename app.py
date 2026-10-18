@@ -263,11 +263,12 @@ def cambiar_pagina(nombre_pagina):
     st.rerun()
 
 # ============================================
-# 5. LÓGICA DE MÚSICA CON YOUTUBE (SOLO EN INICIO)
+# 5. LÓGICA DE MÚSICA CON YOUTUBE
 # ============================================
-# El último enlace que me diste está de primero.
 URLS_YOUTUBE = [
-    "https://www.youtube.com/watch?v=W14mg_zQpZc", # <-- SIEMPRE EL PRIMERO
+    "https://www.youtube.com/watch?v=W14mg_zQpZc", 
+    "https://www.youtube.com/watch?v=emVLPHouen4", 
+    "https://www.youtube.com/watch?v=zuSdkh45_L4",
     "https://www.youtube.com/watch?v=AB2x_DII3W0",
     "https://www.youtube.com/watch?v=gx_4F3NQzCE",
     "https://www.youtube.com/watch?v=oT-vdtizfHo"
@@ -284,37 +285,8 @@ def obtener_video_id(url):
         return url.split("youtu.be/")[1].split("?")[0]
     return url
 
+# La barra lateral SOLO tiene el acceso de administrador
 with st.sidebar:
-    # El reproductor SOLO se muestra si estamos en la página de inicio
-    if st.session_state.pagina_actual == 'inicio':
-        st.markdown("### 🎵 Música Cristiana")
-        st.markdown("---")
-        
-        if URLS_YOUTUBE:
-            url_actual = URLS_YOUTUBE[st.session_state.indice_video]
-            video_id = obtener_video_id(url_actual)
-            
-            youtube_iframe = f"""
-            <iframe width="100%" height="200" 
-                    src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
-            """
-            components.html(youtube_iframe, height=220)
-            
-            if st.button("⏭️ Siguiente Canción", use_container_width=True):
-                st.session_state.indice_video = (st.session_state.indice_video + 1) % len(URLS_YOUTUBE)
-                st.rerun()
-            
-            st.caption(f"Canción {st.session_state.indice_video + 1} de {len(URLS_YOUTUBE)}")
-        else:
-            st.info("No hay canciones configuradas.")
-        
-        st.markdown("---")
-    
-    # El acceso de administrador siempre está visible
     st.markdown("### 🔐 Acceso Administrador")
     if not st.session_state.admin_logged:
         pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
@@ -345,6 +317,7 @@ def mostrar_inicio():
     col_izq, col_der = st.columns([2.2, 1], gap="large")
 
     with col_izq:
+        # 1. Versículo del día
         st.markdown("""
         <div class="verse-light">
             <div class="verse-text">"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."</div>
@@ -352,6 +325,7 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
+        # 2. Oración de la mañana
         st.markdown('<div class="section-header">🙏 Oración de la Mañana</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light">
@@ -360,8 +334,61 @@ def mostrar_inicio():
             </p>
         </div>
         """, unsafe_allow_html=True)
+
+        # 3. APOYAR LA OBRA (Movido aquí, después de la oración)
+        st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
+            <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px;">
+                <strong>Si crees que mi trabajo es edificante, haz tu donación para seguir adelante.</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único, destinado a mantener esta herramienta gratuita para todos.
+            </p>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
+                Si ud quiere hacer una donación voluntaria, comuníquese vía WhatsApp por el <strong>04242004015</strong>.
+            </p>
+            <a href="https://wa.me/584242004015" target="_blank" style="text-decoration: none;">
+                <div style="background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.6); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    Contactar por WhatsApp
+                </div>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # 4. REPRODUCTOR DE MÚSICA
+        st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
+        
+        if URLS_YOUTUBE:
+            url_actual = URLS_YOUTUBE[st.session_state.indice_video]
+            video_id = obtener_video_id(url_actual)
+            
+            youtube_iframe = f"""
+            <iframe width="100%" height="250" 
+                    src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+            """
+            components.html(youtube_iframe, height=260)
+            
+            if st.button("⏭️ Siguiente Canción", use_container_width=True):
+                st.session_state.indice_video = (st.session_state.indice_video + 1) % len(URLS_YOUTUBE)
+                st.rerun()
+            
+            st.caption(f"Canción {st.session_state.indice_video + 1} de {len(URLS_YOUTUBE)}")
+        else:
+            st.info("No hay canciones configuradas.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
+
+        # 5. BOTONES DE EXPLORACIÓN (Una al lado de la otra)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         b1, b2, b3 = st.columns(3)
@@ -389,6 +416,7 @@ def mostrar_inicio():
                 cambiar_pagina("suenos")
 
     with col_der:
+        # 6. MURO DE MIEMBROS (Se mantiene en la derecha)
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card-light" style="padding: 25px;">
@@ -407,26 +435,6 @@ def mostrar_inicio():
                 <span class="member-name">Un hermano anónimo</span>
                 <span class="member-date">Sep 2026</span>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
-        st.markdown("""
-        <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
-            <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px;">
-                <strong>Si crees que mi trabajo es edificante, haz tu donación para seguir adelante.</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único, destinado a mantener esta herramienta gratuita para todos.
-            </p>
-            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
-                Si ud quiere hacer una donación voluntaria, comuníquese vía WhatsApp por el <strong>04242004015</strong>.
-            </p>
-            <a href="https://wa.me/584242004015" target="_blank" style="text-decoration: none;">
-                <div style="background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.6); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
-                    Contactar por WhatsApp
-                </div>
-            </a>
         </div>
         """, unsafe_allow_html=True)
 
