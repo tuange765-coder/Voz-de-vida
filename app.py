@@ -8,7 +8,7 @@ import urllib.parse
 # ============================================
 st.set_page_config(
     page_title="Palabra de Vida | App Cristiana",
-    page_icon="✝️",
+    page_icon="logo.png",  # <-- Tu logo personalizado
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -537,7 +537,6 @@ def mostrar_pastor():
                 if not pregunta.strip():
                     st.warning("Por favor, escribe una pregunta antes de enviar.")
                 else:
-                    # Guardar en Supabase como pendiente
                     conn.table("respuestas_pastor").insert({
                         "pregunta": pregunta,
                         "respuesta": "PENDIENTE",
