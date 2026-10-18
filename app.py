@@ -5,9 +5,18 @@ import random
 import urllib.parse
 
 # ============================================
-# CONFIGURACIÓN DE BASE DE DATOS (SUPABASE)
+# 1. CONFIGURACIÓN DE PÁGINA (DEBE SER LO PRIMERO)
 # ============================================
-# MODO_DEMO = False significa que usaremos Supabase permanentemente
+st.set_page_config(
+    page_title="Palabra de Vida | App Cristiana",
+    page_icon="✝️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ============================================
+# 2. CONFIGURACIÓN DE BASE DE DATOS (SUPABASE)
+# ============================================
 MODO_DEMO = False
 
 if not MODO_DEMO:
@@ -19,17 +28,7 @@ if not MODO_DEMO:
         st.stop()
 
 # ============================================
-# CONFIGURACIÓN GENERAL
-# ============================================
-st.set_page_config(
-    page_title="Palabra de Vida | App Cristiana",
-    page_icon="✝️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# ============================================
-# ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE FORZADO)
+# 3. ESTILOS PROFESIONALES (CONTRASTE INTELIGENTE)
 # ============================================
 IMG_URL = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop"
 
@@ -251,12 +250,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ============================================
-# INICIALIZAR ESTADO DE NAVEGACIÓN Y DATOS
+# 4. INICIALIZAR ESTADO DE NAVEGACIÓN Y DATOS
 # ============================================
 if 'pagina_actual' not in st.session_state:
     st.session_state.pagina_actual = 'inicio'
 
-# Listas en memoria (solo se usan si MODO_DEMO es True, pero las dejamos por seguridad)
 if 'respuestas_pastor' not in st.session_state:
     st.session_state.respuestas_pastor = []
 if 'reflexiones' not in st.session_state:
@@ -275,7 +273,7 @@ def cambiar_pagina(nombre_pagina):
     st.rerun()
 
 # ============================================
-# LOGIN
+# 5. LOGIN
 # ============================================
 login_obj = __login__(
     auth_token=st.secrets["courier_auth_token"],
@@ -286,7 +284,7 @@ login_obj = __login__(
 LOGGED_IN = login_obj.build_login_ui()
 
 # ============================================
-# LÓGICA DE MÚSICA POR URL (EN BARRA LATERAL)
+# 6. LÓGICA DE MÚSICA POR URL (EN BARRA LATERAL)
 # ============================================
 URLS_CANCIONES = [
     "https://TU_ENLACE_1.mp3",
@@ -333,7 +331,7 @@ if LOGGED_IN:
                 cambiar_pagina("admin")
 
 # ============================================
-# FUNCIONES DE LAS PÁGINAS
+# 7. FUNCIONES DE LAS PÁGINAS
 # ============================================
 
 def mostrar_inicio():
@@ -508,7 +506,6 @@ def mostrar_curiosidades():
     st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Cargar datos desde Supabase
     res = execute_query(conn.table("curiosidades").select("*").order("created_at", desc=True), ttl="1m")
     data_curiosidades = res.data
 
@@ -574,7 +571,6 @@ def mostrar_pastor():
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💬 Respuestas del Pastor</div>', unsafe_allow_html=True)
     
-    # Cargar datos desde Supabase
     res = execute_query(conn.table("respuestas_pastor").select("*").order("created_at", desc=True), ttl="1m")
     data_pastor = res.data
     
@@ -617,7 +613,6 @@ def mostrar_suenos():
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💬 Interpretaciones publicadas</div>', unsafe_allow_html=True)
     
-    # Cargar datos desde Supabase
     res = execute_query(conn.table("suenos").select("*").order("created_at", desc=True), ttl="1m")
     data_suenos = res.data
     
@@ -640,7 +635,6 @@ def mostrar_reflexiones():
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
     
-    # Cargar datos desde Supabase
     res = execute_query(conn.table("reflexiones").select("*").order("created_at", desc=True), ttl="1m")
     data_ref = res.data
     
@@ -662,7 +656,6 @@ def mostrar_mitos():
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">⚠️ Mitos y Doctrinas</h1>', unsafe_allow_html=True)
     
-    # Cargar datos desde Supabase
     res = execute_query(conn.table("mitos").select("*").order("created_at", desc=True), ttl="1m")
     data_mitos = res.data
     
@@ -695,7 +688,6 @@ def mostrar_admin():
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños"])
 
-    # --- TAB 1: RESPUESTAS AL PASTOR ---
     with tab1:
         st.markdown("### Agregar Respuesta")
         with st.form("admin_pastor"):
@@ -723,7 +715,6 @@ def mostrar_admin():
                         conn.table("respuestas_pastor").delete().eq("id", r['id']).execute()
                         st.rerun()
 
-    # --- TAB 2: REFLEXIONES ---
     with tab2:
         st.markdown("### Agregar Reflexión")
         with st.form("admin_reflexion"):
@@ -750,7 +741,6 @@ def mostrar_admin():
                         conn.table("reflexiones").delete().eq("id", r['id']).execute()
                         st.rerun()
 
-    # --- TAB 3: CURIOSIDADES ---
     with tab3:
         st.markdown("### Agregar Curiosidad")
         with st.form("admin_curiosidad"):
@@ -781,7 +771,6 @@ def mostrar_admin():
                         conn.table("curiosidades").delete().eq("id", c['id']).execute()
                         st.rerun()
 
-    # --- TAB 4: MITOS ---
     with tab4:
         st.markdown("### Agregar Mito o Falsa Doctrina")
         with st.form("admin_mito"):
@@ -808,7 +797,6 @@ def mostrar_admin():
                         conn.table("mitos").delete().eq("id", m['id']).execute()
                         st.rerun()
 
-    # --- TAB 5: SUEÑOS ---
     with tab5:
         st.markdown("### Agregar Interpretación de Sueño")
         with st.form("admin_sueno"):
@@ -838,7 +826,7 @@ def mostrar_admin():
 
 
 # ============================================
-# ENRUTADOR PRINCIPAL
+# 8. ENRUTADOR PRINCIPAL
 # ============================================
 if LOGGED_IN:
     if st.session_state.pagina_actual == 'inicio':
