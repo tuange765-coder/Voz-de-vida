@@ -263,14 +263,14 @@ def cambiar_pagina(nombre_pagina):
     st.rerun()
 
 # ============================================
-# 5. LÓGICA DE MÚSICA CON YOUTUBE (EN BARRA LATERAL)
+# 5. LÓGICA DE MÚSICA CON YOUTUBE (SOLO EN INICIO)
 # ============================================
-# Aquí están tus enlaces de YouTube Music convertidos a YouTube normal
+# El último enlace que me diste está de primero.
 URLS_YOUTUBE = [
+    "https://www.youtube.com/watch?v=W14mg_zQpZc", # <-- SIEMPRE EL PRIMERO
     "https://www.youtube.com/watch?v=AB2x_DII3W0",
     "https://www.youtube.com/watch?v=gx_4F3NQzCE",
-    "https://www.youtube.com/watch?v=oT-vdtizfHo",
-    "https://www.youtube.com/watch?v=W14mg_zQpZc"
+    "https://www.youtube.com/watch?v=oT-vdtizfHo"
 ]
 
 if 'indice_video' not in st.session_state:
@@ -285,33 +285,36 @@ def obtener_video_id(url):
     return url
 
 with st.sidebar:
-    st.markdown("### 🎵 Música Cristiana")
-    st.markdown("---")
+    # El reproductor SOLO se muestra si estamos en la página de inicio
+    if st.session_state.pagina_actual == 'inicio':
+        st.markdown("### 🎵 Música Cristiana")
+        st.markdown("---")
+        
+        if URLS_YOUTUBE:
+            url_actual = URLS_YOUTUBE[st.session_state.indice_video]
+            video_id = obtener_video_id(url_actual)
+            
+            youtube_iframe = f"""
+            <iframe width="100%" height="200" 
+                    src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+            """
+            components.html(youtube_iframe, height=220)
+            
+            if st.button("⏭️ Siguiente Canción", use_container_width=True):
+                st.session_state.indice_video = (st.session_state.indice_video + 1) % len(URLS_YOUTUBE)
+                st.rerun()
+            
+            st.caption(f"Canción {st.session_state.indice_video + 1} de {len(URLS_YOUTUBE)}")
+        else:
+            st.info("No hay canciones configuradas.")
+        
+        st.markdown("---")
     
-    if URLS_YOUTUBE:
-        url_actual = URLS_YOUTUBE[st.session_state.indice_video]
-        video_id = obtener_video_id(url_actual)
-        
-        # Creamos el iframe de YouTube
-        youtube_iframe = f"""
-        <iframe width="100%" height="200" 
-                src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
-        """
-        components.html(youtube_iframe, height=220)
-        
-        if st.button("⏭️ Siguiente Canción", use_container_width=True):
-            st.session_state.indice_video = (st.session_state.indice_video + 1) % len(URLS_YOUTUBE)
-            st.rerun()
-        
-        st.caption(f"Canción {st.session_state.indice_video + 1} de {len(URLS_YOUTUBE)}")
-    else:
-        st.info("No hay canciones configuradas.")
-    
-    st.markdown("---")
+    # El acceso de administrador siempre está visible
     st.markdown("### 🔐 Acceso Administrador")
     if not st.session_state.admin_logged:
         pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
@@ -411,7 +414,7 @@ def mostrar_inicio():
         st.markdown("""
         <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
             <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px;">
-                <strong>Aclaración importante:</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único, destinado a seguir creciendo en el trabajo del Señor. Tu generosidad nos permite mantener esta herramienta gratuita para todos.
+                <strong>Si crees que mi trabajo es edificante, haz tu donación para seguir adelante.</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único, destinado a mantener esta herramienta gratuita para todos.
             </p>
             <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
                 Si ud quiere hacer una donación voluntaria, comuníquese vía WhatsApp por el <strong>04242004015</strong>.
