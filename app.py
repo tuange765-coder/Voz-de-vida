@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_supabase_auth_ui.widgets import __login__
 import requests
 import random
+import urllib.parse
 
 # ============================================
 # CONFIGURACIÓN
@@ -577,18 +578,81 @@ def mostrar_curiosidades():
     """, unsafe_allow_html=True)
 
 
+# --- PÁGINA: PREGÚNTALE AL PASTOR ---
+def mostrar_pastor():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🙋 Pregúntale al Pastor</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Envía tu duda y recibe una respuesta bíblica</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --- FORMULARIO DE PREGUNTA ---
+    st.markdown('<div class="section-header">📝 Envía tu pregunta</div>', unsafe_allow_html=True)
+    
+    # Usamos expander para el formulario (fondo claro, texto negro)
+    with st.expander("Haz clic aquí para escribir tu pregunta", expanded=True):
+        with st.form("form_pregunta"):
+            nombre = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
+            pregunta = st.text_area("Escribe tu pregunta aquí", placeholder="¿Qué significa...?", height=150)
+            
+            submitted = st.form_submit_button("Enviar Pregunta por WhatsApp", type="primary", use_container_width=True)
+            
+            if submitted:
+                if not pregunta.strip():
+                    st.warning("Por favor, escribe una pregunta antes de enviar.")
+                else:
+                    mensaje = f"Hola Pastor, mi nombre es {nombre if nombre else 'un hermano/a'}. Tengo una pregunta: {pregunta}"
+                    mensaje_codificado = urllib.parse.quote(mensaje)
+                    numero_whatsapp = "584242004015"
+                    url_whatsapp = f"https://wa.me/{numero_whatsapp}?text={mensaje_codificado}"
+                    
+                    st.success("¡Pregunta lista! Haz clic en el botón de abajo para enviarla por WhatsApp.")
+                    st.markdown(f"""
+                    <a href="{url_whatsapp}" target="_blank" style="text-decoration: none;">
+                        <div style="background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; margin-top: 15px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); cursor: pointer;">
+                            📲 Abrir WhatsApp y Enviar
+                        </div>
+                    </a>
+                    """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    # --- PANEL DE RESPUESTAS ---
+    st.markdown('<div class="section-header">💬 Respuestas del Pastor</div>', unsafe_allow_html=True)
+    
+    respuestas = [
+        {
+            "pregunta": "¿Qué significa 'Lámpara es a mis pies tu palabra'?",
+            "respuesta": "Significa que la Biblia es la guía que ilumina nuestro camino. Así como una lámpara alumbra nuestros pies en la oscuridad, la Palabra de Dios nos muestra cómo andar correctamente en la vida. (Salmos 119:105).",
+            "fecha": "15 Oct 2026"
+        },
+        {
+            "pregunta": "¿Debo bautizarme de nuevo si me alejé de Dios?",
+            "respuesta": "El bautismo es un acto de obediencia que simboliza nuestra unión con Cristo. Si ya fuiste bautizado en el nombre de Jesús, no necesitas repetirlo; lo que necesitas es arrepentirte y volver a Él, pues Su gracia te recibe siempre.",
+            "fecha": "12 Oct 2026"
+        }
+    ]
+    
+    if not respuestas:
+        st.info("Aún no hay respuestas publicadas. ¡Vuelve pronto!")
+    else:
+        for r in respuestas:
+            st.markdown(f"""
+            <div class="card-light" style="margin-bottom: 15px;">
+                <p style="font-weight: 600; color: #D4AF37 !important; margin-bottom: 5px;">Pregunta: {r['pregunta']}</p>
+                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{r['fecha']}</p>
+                <p><strong>Respuesta:</strong> {r['respuesta']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
 # --- OTRAS PÁGINAS (Placeholders) ---
 def mostrar_reflexiones():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
     st.markdown('<div class="card-light"><p>Próximamente: Devocionales diarios.</p></div>', unsafe_allow_html=True)
-
-def mostrar_pastor():
-    if st.button("⬅️ Volver al Inicio"):
-        cambiar_pagina("inicio")
-    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🙋 Pregúntale al Pastor</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="card-light"><p>Próximamente: Formulario de contacto.</p></div>', unsafe_allow_html=True)
 
 def mostrar_mitos():
     if st.button("⬅️ Volver al Inicio"):
@@ -613,10 +677,10 @@ if LOGGED_IN:
         mostrar_biblia()
     elif st.session_state.pagina_actual == 'curiosidades':
         mostrar_curiosidades()
-    elif st.session_state.pagina_actual == 'reflexiones':
-        mostrar_reflexiones()
     elif st.session_state.pagina_actual == 'pastor':
         mostrar_pastor()
+    elif st.session_state.pagina_actual == 'reflexiones':
+        mostrar_reflexiones()
     elif st.session_state.pagina_actual == 'mitos':
         mostrar_mitos()
     elif st.session_state.pagina_actual == 'favoritos':
