@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_supabase_auth_ui.widgets import __login__
 import requests
+import random
 
 # ============================================
 # CONFIGURACIÓN
@@ -9,7 +10,7 @@ st.set_page_config(
     page_title="Palabra de Vida | App Cristiana",
     page_icon="✝️",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"  # Barra lateral abierta para ver la música
 )
 
 # ============================================
@@ -256,6 +257,35 @@ login_obj = __login__(
 LOGGED_IN = login_obj.build_login_ui()
 
 # ============================================
+# LÓGICA DE MÚSICA POR URL (EN BARRA LATERAL)
+# ============================================
+URLS_CANCIONES = [
+    "https://TU_ENLACE_1.mp3",
+    "https://TU_ENLACE_2.mp3",
+]
+
+if LOGGED_IN:
+    # Barajar la lista una vez por sesión
+    if 'canciones_url' not in st.session_state:
+        canciones = URLS_CANCIONES.copy()
+        random.shuffle(canciones)
+        st.session_state.canciones_url = canciones
+        st.session_state.indice_url = 0
+
+    with st.sidebar:
+        st.markdown("### 🎵 Música Cristiana")
+        st.markdown("---")
+        if st.session_state.canciones_url:
+            url_actual = st.session_state.canciones_url[st.session_state.indice_url]
+            st.audio(url_actual, format="audio/mpeg")
+            if st.button("⏭️ Siguiente Canción", use_container_width=True):
+                st.session_state.indice_url = (st.session_state.indice_url + 1) % len(st.session_state.canciones_url)
+                st.rerun()
+            st.caption(f"Canción {st.session_state.indice_url + 1} de {len(st.session_state.canciones_url)}")
+        else:
+            st.info("No hay canciones configuradas.")
+
+# ============================================
 # FUNCIONES DE LAS PÁGINAS
 # ============================================
 
@@ -347,7 +377,6 @@ def mostrar_inicio():
         """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        # SECCIÓN DE CRÉDITOS ACTUALIZADA
         st.markdown("""
         <div class="card-dark" style="padding: 25px; text-align: center;">
             <p style="color: #D4AF37 !important; font-size: 1rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
