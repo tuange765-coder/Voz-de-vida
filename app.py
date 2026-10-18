@@ -5,7 +5,21 @@ import random
 import urllib.parse
 
 # ============================================
-# CONFIGURACIÓN
+# CONFIGURACIÓN DE BASE DE DATOS (SUPABASE)
+# ============================================
+# MODO_DEMO = False significa que usaremos Supabase permanentemente
+MODO_DEMO = False
+
+if not MODO_DEMO:
+    try:
+        from st_supabase_connection import SupabaseConnection, execute_query
+        conn = st.connection("supabase", type=SupabaseConnection)
+    except Exception as e:
+        st.error(f"Error al conectar con Supabase. Revisa tus Secrets. Detalle: {e}")
+        st.stop()
+
+# ============================================
+# CONFIGURACIÓN GENERAL
 # ============================================
 st.set_page_config(
     page_title="Palabra de Vida | App Cristiana",
@@ -237,10 +251,24 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ============================================
-# INICIALIZAR ESTADO DE NAVEGACIÓN
+# INICIALIZAR ESTADO DE NAVEGACIÓN Y DATOS
 # ============================================
 if 'pagina_actual' not in st.session_state:
     st.session_state.pagina_actual = 'inicio'
+
+# Listas en memoria (solo se usan si MODO_DEMO es True, pero las dejamos por seguridad)
+if 'respuestas_pastor' not in st.session_state:
+    st.session_state.respuestas_pastor = []
+if 'reflexiones' not in st.session_state:
+    st.session_state.reflexiones = []
+if 'curiosidades' not in st.session_state:
+    st.session_state.curiosidades = []
+if 'mitos' not in st.session_state:
+    st.session_state.mitos = []
+if 'suenos' not in st.session_state:
+    st.session_state.suenos = []
+if 'admin_logged' not in st.session_state:
+    st.session_state.admin_logged = False
 
 def cambiar_pagina(nombre_pagina):
     st.session_state.pagina_actual = nombre_pagina
@@ -284,6 +312,25 @@ if LOGGED_IN:
             st.caption(f"Canción {st.session_state.indice_url + 1} de {len(st.session_state.canciones_url)}")
         else:
             st.info("No hay canciones configuradas.")
+        
+        st.markdown("---")
+        st.markdown("### 🔐 Acceso Administrador")
+        if not st.session_state.admin_logged:
+            pass_admin = st.text_input("Contraseña", type="password", key="pass_admin_input")
+            if st.button("Entrar como Admin", use_container_width=True):
+                if pass_admin == "Willian2026": # Cambia esta contraseña
+                    st.session_state.admin_logged = True
+                    st.success("¡Bienvenido, Admin!")
+                    st.rerun()
+                else:
+                    st.error("Contraseña incorrecta")
+        else:
+            st.success("Sesión de Admin activa")
+            if st.button("Cerrar Sesión Admin", use_container_width=True):
+                st.session_state.admin_logged = False
+                st.rerun()
+            if st.button("Ir al Panel de Administrador", use_container_width=True):
+                cambiar_pagina("admin")
 
 # ============================================
 # FUNCIONES DE LAS PÁGINAS
@@ -337,8 +384,8 @@ def mostrar_inicio():
             if st.button("⚠️ Mitos y Doctrinas", use_container_width=True):
                 cambiar_pagina("mitos")
         with b6:
-            if st.button("❤️ Favoritos", use_container_width=True):
-                cambiar_pagina("favoritos")
+            if st.button("💭 Tus sueños significan algo", use_container_width=True):
+                cambiar_pagina("suenos")
 
     with col_der:
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
@@ -387,7 +434,7 @@ def mostrar_inicio():
         </div>
         """, unsafe_allow_html=True)
 
-# --- PÁGINA: BIBLIA (Midvash API - RVR1960) ---
+# --- PÁGINA: BIBLIA ---
 def mostrar_biblia():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -452,7 +499,7 @@ def mostrar_biblia():
         st.error(f"No se pudo cargar el capítulo. Verifica tu conexión o intenta con otro capítulo. (Error: {e})")
 
 
-# --- PÁGINA: CURIOSIDADES (Pestañas HTML Desplegables) ---
+# --- PÁGINA: CURIOSIDADES ---
 def mostrar_curiosidades():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
@@ -461,119 +508,30 @@ def mostrar_curiosidades():
     st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    curiosidades = [
-        {
-            "titulo": "📜 La Estela de Merneptah (Primera mención de Israel)",
-            "que_es": "Una losa de granito negro descubierta en 1896 en Tebas, Egipto. Data aproximadamente del 1205 a.C.",
-            "importancia": "Contiene la primera mención conocida de 'Israel' fuera de la Biblia. El faraón Merneptah se jacta de haber derrotado a Israel, lo que confirma que el pueblo ya estaba establecido en Canaán en esa época.",
-            "referencia": "Éxodo y Josué (la conquista de la Tierra Prometida)."
-        },
-        {
-            "titulo": "🏺 El Cilindro de Ciro (El decreto de repatriación)",
-            "que_es": "Un cilindro de arcilla con inscripciones en acadio, encontrado en Sippar, cerca de Bagdad (Irak).",
-            "importancia": "Documenta la conquista de Babilonia por Ciro el Grande y su política de permitir a los pueblos deportados regresar a sus tierras. Esto coincide exactamente con el relato bíblico del decreto que permitió a los judíos volver a Jerusalén.",
-            "referencia": "Esdras 1:1-4; Isaías 44:28–45:1."
-        },
-        {
-            "titulo": "📜 Los Rollos del Mar Muerto (Los manuscritos más antiguos)",
-            "que_es": "Miles de fragmentos de manuscritos descubiertos en cuevas cerca de Qumrán, a orillas del Mar Muerto, a partir de 1947.",
-            "importancia": "Son los manuscritos bíblicos más antiguos conocidos (copiados entre el siglo III a.C. y el siglo I d.C.). Incluyen fragmentos de casi todos los libros del Antiguo Testamento y demuestran la fidelidad con la que el texto bíblico fue transmitido durante más de mil años.",
-            "referencia": "Dato curioso: El fragmento más antiguo de Génesis 1:1 fue encontrado entre estos rollos."
-        },
-        {
-            "titulo": "💧 El Túnel de Ezequías (Piscina de Siloé)",
-            "que_es": "Un túnel de 533 metros excavado en roca sólida bajo Jerusalén hace más de 2.700 años.",
-            "importancia": "Fue construido por el rey Ezequías para asegurar el suministro de agua de la ciudad ante el asedio asirio. La Inscripción de Siloé, encontrada dentro, describe cómo dos equipos de excavadores se encontraron en el medio. Esto confirma el relato bíblico de los preparativos de Ezequías.",
-            "referencia": "2 Reyes 20:20; 2 Crónicas 32:30."
-        },
-        {
-            "titulo": "👑 La Estela de Tel Dan (La Casa de David)",
-            "que_es": "Fragmentos de una estela de basalto encontrados en el norte de Israel en 1993 y 1994.",
-            "importancia": "Contiene la frase 'Casa de David' (Beit David), escrita por un rey arameo en el siglo IX a.C. Es la primera evidencia arqueológica directa de la existencia de la dinastía del rey David, fuera de la Biblia.",
-            "referencia": "1 Samuel 16–2 Samuel 5."
-        },
-        {
-            "titulo": "🗿 La Estela de Mesa (Piedra Moabita)",
-            "que_es": "Una losa de basalto negro de 1,15 m de altura, descubierta en 1868 en Jordania. Se conserva en el Museo del Louvre.",
-            "importancia": "El rey Mesa de Moab narra su rebelión contra Israel, coincidiendo con el relato bíblico de 2 Reyes 3. Menciona el nombre de Yahvé y la 'Casa de David', confirmando detalles históricos sobre la ocupación israelita de Moab.",
-            "referencia": "2 Reyes 1:1; 3:4-27."
-        },
-        {
-            "titulo": "🏛️ Las Tablillas de Ebla (El mundo de los patriarcas)",
-            "que_es": "Miles de tablillas de arcilla con escritura cuneiforme encontradas en la antigua ciudad de Ebla, Siria, en la década de 1970.",
-            "importancia": "Contienen nombres y costumbres que se mencionan en Génesis (como las ciudades de Ur y Sodoma), demostrando que el mundo patriarcal descrito en la Biblia era históricamente real y no una invención posterior.",
-            "referencia": "Génesis 11–50."
-        },
-        {
-            "titulo": "🏺 El Rey Belsasar (Daniel 5)",
-            "que_es": "Durante mucho tiempo, los críticos negaron la existencia de Belsasar porque no aparecía en fuentes fuera de la Biblia.",
-            "importancia": "Hallazgos posteriores en tablillas babilónicas demostraron que Belsasar era el hijo de Nabonido y corregente de Babilonia, exactamente como lo describe Daniel 5. Esto explica por qué Daniel fue ofrecido como 'tercer gobernante' del reino.",
-            "referencia": "Daniel 5:16, 29-31."
-        },
-        {
-            "titulo": "📜 Las Cartas de Lachis (La caída de Judá)",
-            "que_es": "Fragmentos de cerámica (ostraca) con inscripciones en hebreo antiguo, encontrados en las ruinas de Lachis, una ciudad fortificada de Judá.",
-            "importancia": "Son una correspondencia militar de la época del profeta Jeremías. En una de ellas se lee: 'No podemos ver las señales de Azeca', lo que coincide con el avance de Nabucodonosor descrito en Jeremías 34:7.",
-            "referencia": "Jeremías 34:7."
-        },
-        {
-            "titulo": "🏛️ El Sello del Rey Ezequías",
-            "que_es": "Una impresión de arcilla (bula) de solo 1 cm de diámetro, encontrada en 2015 en Jerusalén.",
-            "importancia": "Lleva la inscripción: 'Perteneciente a Ezequías, hijo de Acaz, rey de Judá', con un símbolo solar con alas. Es prueba física del reinado de uno de los reyes más importantes del Antiguo Testamento.",
-            "referencia": "2 Reyes 18-20; Isaías 36-39."
-        },
-        {
-            "titulo": "🏺 Los Heteos (Un pueblo que se creía legendario)",
-            "que_es": "Los hititas son mencionados en varios libros del Antiguo Testamento, pero los críticos los consideraban una 'leyenda bíblica'.",
-            "importancia": "Los arqueólogos encontraron la capital hitita en Bogazkoy, Turquía, repleta de registros de su pueblo. Esto confirmó que los hititas fueron una civilización real y poderosa, tal como la Biblia los describe.",
-            "referencia": "Génesis 23; 2 Samuel 11; 1 Reyes 10."
-        },
-        {
-            "titulo": "🌿 El Jardín bajo el Santo Sepulcro (Descubrimiento 2025)",
-            "que_es": "Excavaciones recientes bajo la Basílica del Santo Sepulcro en Jerusalén han revelado un antiguo jardín con restos de trigo, uvas e higos.",
-            "importancia": "El Evangelio de Juan dice que Jesús fue crucificado y sepultado en un huerto. Los análisis arqueobotánicos confirman la existencia de un área cultivada entre el Calvario y la tumba, coincidiendo con el relato bíblico.",
-            "referencia": "Juan 19:41-42."
-        },
-        {
-            "titulo": "🏛️ La Inscripción de Poncio Pilato",
-            "que_es": "Una piedra caliza con una inscripción en latín, encontrada en Cesarea Marítima en 1961.",
-            "importancia": "Contiene el nombre de 'Poncio Pilato, prefecto de Judea'. Es la única evidencia arqueológica directa de la existencia del gobernador romano que condenó a Jesús.",
-            "referencia": "Mateo 27; Marcos 15; Lucas 23; Juan 18-19."
-        },
-        {
-            "titulo": "🦴 El Osario de Caifás",
-            "que_es": "Un osario de piedra caliza con la inscripción 'José, hijo de Caifás', encontrado en Jerusalén en 1990.",
-            "importancia": "Es la primera evidencia arqueológica del sumo sacerdote Caifás, quien presidió el juicio contra Jesús.",
-            "referencia": "Mateo 26:57; Juan 18:13."
-        },
-        {
-            "titulo": "📜 El Papiro 52 (El fragmento más antiguo del Nuevo Testamento)",
-            "que_es": "Un pequeño fragmento de papiro del Evangelio de Juan, datado alrededor del año 125 d.C.",
-            "importancia": "Es el fragmento más antiguo conocido del Nuevo Testamento. Contiene partes de Juan 18:31-33 y 37-38.",
-            "referencia": "Juan 18."
-        }
-    ]
+    # Cargar datos desde Supabase
+    res = execute_query(conn.table("curiosidades").select("*").order("created_at", desc=True), ttl="1m")
+    data_curiosidades = res.data
 
-    html_expanders = ""
-    for c in curiosidades:
-        html_expanders += f"""
-        <details>
-            <summary>{c['titulo']}</summary>
-            <div>
-                <p><strong>¿Qué es?</strong> {c['que_es']}</p>
-                <p><strong>¿Por qué es importante?</strong> {c['importancia']}</p>
-                <p><strong>Referencia bíblica:</strong> {c['referencia']}</p>
-            </div>
-        </details>
-        """
-    
-    st.markdown(html_expanders, unsafe_allow_html=True)
+    if not data_curiosidades:
+        st.info("Aún no hay curiosidades publicadas. El administrador las agregará pronto.")
+    else:
+        for c in data_curiosidades:
+            st.markdown(f"""
+            <details>
+                <summary>{c['titulo']}</summary>
+                <div>
+                    <p><strong>¿Qué es?</strong> {c['que_es']}</p>
+                    <p><strong>¿Por qué es importante?</strong> {c['importancia']}</p>
+                    <p><strong>Referencia bíblica:</strong> {c['referencia']}</p>
+                </div>
+            </details>
+            """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="card-dark">
-        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras. Como dijo el arqueólogo Joseph Free: "La arqueología ha confirmado incontables pasajes que los críticos habían rechazado como no históricos".</p>
+        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -587,10 +545,7 @@ def mostrar_pastor():
     st.markdown('<p class="hero-subtitle">Envía tu duda y recibe una respuesta bíblica</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --- FORMULARIO DE PREGUNTA ---
     st.markdown('<div class="section-header">📝 Envía tu pregunta</div>', unsafe_allow_html=True)
-    
-    # Usamos expander para el formulario (fondo claro, texto negro)
     with st.expander("Haz clic aquí para escribir tu pregunta", expanded=True):
         with st.form("form_pregunta"):
             nombre = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
@@ -617,54 +572,269 @@ def mostrar_pastor():
                     """, unsafe_allow_html=True)
 
     st.markdown("<br><br>", unsafe_allow_html=True)
-
-    # --- PANEL DE RESPUESTAS ---
     st.markdown('<div class="section-header">💬 Respuestas del Pastor</div>', unsafe_allow_html=True)
     
-    respuestas = [
-        {
-            "pregunta": "¿Qué significa 'Lámpara es a mis pies tu palabra'?",
-            "respuesta": "Significa que la Biblia es la guía que ilumina nuestro camino. Así como una lámpara alumbra nuestros pies en la oscuridad, la Palabra de Dios nos muestra cómo andar correctamente en la vida. (Salmos 119:105).",
-            "fecha": "15 Oct 2026"
-        },
-        {
-            "pregunta": "¿Debo bautizarme de nuevo si me alejé de Dios?",
-            "respuesta": "El bautismo es un acto de obediencia que simboliza nuestra unión con Cristo. Si ya fuiste bautizado en el nombre de Jesús, no necesitas repetirlo; lo que necesitas es arrepentirte y volver a Él, pues Su gracia te recibe siempre.",
-            "fecha": "12 Oct 2026"
-        }
-    ]
+    # Cargar datos desde Supabase
+    res = execute_query(conn.table("respuestas_pastor").select("*").order("created_at", desc=True), ttl="1m")
+    data_pastor = res.data
     
-    if not respuestas:
+    if not data_pastor:
         st.info("Aún no hay respuestas publicadas. ¡Vuelve pronto!")
     else:
-        for r in respuestas:
+        for r in data_pastor:
             st.markdown(f"""
             <div class="card-light" style="margin-bottom: 15px;">
                 <p style="font-weight: 600; color: #D4AF37 !important; margin-bottom: 5px;">Pregunta: {r['pregunta']}</p>
-                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{r['fecha']}</p>
+                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{r.get('fecha', '')}</p>
                 <p><strong>Respuesta:</strong> {r['respuesta']}</p>
             </div>
             """, unsafe_allow_html=True)
 
 
-# --- OTRAS PÁGINAS (Placeholders) ---
+# --- PÁGINA: SUEÑOS ---
+def mostrar_suenos():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Tus sueños significan algo</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Comparte tu sueño y recibe una interpretación bíblica</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown('<div class="section-header">📝 Envía tu sueño</div>', unsafe_allow_html=True)
+    with st.expander("Haz clic aquí para escribir tu sueño", expanded=True):
+        with st.form("form_sueno"):
+            nombre_sueno = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
+            sueno = st.text_area("Describe tu sueño aquí", placeholder="Soñé que...", height=150)
+            
+            submitted_sueno = st.form_submit_button("Enviar Sueño", type="primary", use_container_width=True)
+            
+            if submitted_sueno:
+                if not sueno.strip():
+                    st.warning("Por favor, describe tu sueño antes de enviar.")
+                else:
+                    st.success("¡Sueño recibido! El pastor lo revisará y publicará una respuesta pronto.")
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-header">💬 Interpretaciones publicadas</div>', unsafe_allow_html=True)
+    
+    # Cargar datos desde Supabase
+    res = execute_query(conn.table("suenos").select("*").order("created_at", desc=True), ttl="1m")
+    data_suenos = res.data
+    
+    if not data_suenos:
+        st.info("Aún no hay interpretaciones publicadas. ¡Vuelve pronto!")
+    else:
+        for s in data_suenos:
+            st.markdown(f"""
+            <div class="card-light" style="margin-bottom: 15px;">
+                <p style="font-weight: 600; color: #D4AF37 !important; margin-bottom: 5px;">Sueño: {s['sueno']}</p>
+                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{s.get('fecha', '')}</p>
+                <p><strong>Interpretación:</strong> {s['interpretacion']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: REFLEXIONES ---
 def mostrar_reflexiones():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="card-light"><p>Próximamente: Devocionales diarios.</p></div>', unsafe_allow_html=True)
+    
+    # Cargar datos desde Supabase
+    res = execute_query(conn.table("reflexiones").select("*").order("created_at", desc=True), ttl="1m")
+    data_ref = res.data
+    
+    if not data_ref:
+        st.info("Próximamente: Devocionales diarios.")
+    else:
+        for r in data_ref:
+            st.markdown(f"""
+            <div class="card-light" style="margin-bottom: 15px;">
+                <h3 style="color: #D4AF37 !important;">{r['titulo']}</h3>
+                <p>{r['contenido']}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
+
+# --- PÁGINA: MITOS ---
 def mostrar_mitos():
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">⚠️ Mitos y Doctrinas</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="card-light"><p>Próximamente: Aclaraciones bíblicas.</p></div>', unsafe_allow_html=True)
+    
+    # Cargar datos desde Supabase
+    res = execute_query(conn.table("mitos").select("*").order("created_at", desc=True), ttl="1m")
+    data_mitos = res.data
+    
+    if not data_mitos:
+        st.info("Próximamente: Aclaraciones bíblicas.")
+    else:
+        for m in data_mitos:
+            st.markdown(f"""
+            <div class="card-light" style="margin-bottom: 15px;">
+                <h3 style="color: #D4AF37 !important;">{m['titulo']}</h3>
+                <p>{m['explicacion']}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-def mostrar_favoritos():
+
+# --- PÁGINA: ADMIN ---
+def mostrar_admin():
+    if not st.session_state.admin_logged:
+        st.error("Debes iniciar sesión como administrador para acceder a esta página.")
+        if st.button("Volver al Inicio"):
+            cambiar_pagina("inicio")
+        return
+
     if st.button("⬅️ Volver al Inicio"):
         cambiar_pagina("inicio")
-    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">❤️ Favoritos</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="card-light"><p>Próximamente: Tus versículos guardados.</p></div>', unsafe_allow_html=True)
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔐 Panel de Administrador</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Gestiona el contenido de la app</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños"])
+
+    # --- TAB 1: RESPUESTAS AL PASTOR ---
+    with tab1:
+        st.markdown("### Agregar Respuesta")
+        with st.form("admin_pastor"):
+            pregunta = st.text_area("Pregunta del usuario", height=80)
+            respuesta = st.text_area("Tu respuesta", height=150)
+            fecha = st.text_input("Fecha", value="Hoy")
+            
+            if st.form_submit_button("Publicar Respuesta", type="primary", use_container_width=True):
+                if pregunta and respuesta:
+                    conn.table("respuestas_pastor").insert({"pregunta": pregunta, "respuesta": respuesta, "fecha": fecha}).execute()
+                    st.success("¡Respuesta publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("respuestas_pastor").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Respuestas Publicadas")
+        if not data:
+            st.info("No hay respuestas publicadas aún.")
+        else:
+            for r in data:
+                with st.expander(f"Pregunta: {r['pregunta'][:50]}..."):
+                    st.write(f"**Respuesta:** {r['respuesta']}")
+                    if st.button(f"Eliminar", key=f"del_p_{r['id']}"):
+                        conn.table("respuestas_pastor").delete().eq("id", r['id']).execute()
+                        st.rerun()
+
+    # --- TAB 2: REFLEXIONES ---
+    with tab2:
+        st.markdown("### Agregar Reflexión")
+        with st.form("admin_reflexion"):
+            titulo_ref = st.text_input("Título")
+            contenido_ref = st.text_area("Contenido", height=200)
+            
+            if st.form_submit_button("Publicar Reflexión", type="primary", use_container_width=True):
+                if titulo_ref and contenido_ref:
+                    conn.table("reflexiones").insert({"titulo": titulo_ref, "contenido": contenido_ref}).execute()
+                    st.success("¡Reflexión publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("reflexiones").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Reflexiones Publicadas")
+        if not data:
+            st.info("No hay reflexiones publicadas aún.")
+        else:
+            for r in data:
+                with st.expander(f"Reflexión: {r['titulo']}"):
+                    st.write(r['contenido'])
+                    if st.button(f"Eliminar", key=f"del_r_{r['id']}"):
+                        conn.table("reflexiones").delete().eq("id", r['id']).execute()
+                        st.rerun()
+
+    # --- TAB 3: CURIOSIDADES ---
+    with tab3:
+        st.markdown("### Agregar Curiosidad")
+        with st.form("admin_curiosidad"):
+            titulo_cur = st.text_input("Título")
+            que_es = st.text_area("¿Qué es?", height=100)
+            importancia = st.text_area("¿Por qué es importante?", height=100)
+            referencia = st.text_input("Referencia bíblica")
+            
+            if st.form_submit_button("Publicar Curiosidad", type="primary", use_container_width=True):
+                if titulo_cur and que_es:
+                    conn.table("curiosidades").insert({"titulo": titulo_cur, "que_es": que_es, "importancia": importancia, "referencia": referencia}).execute()
+                    st.success("¡Curiosidad publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa los campos obligatorios.")
+
+        data = execute_query(conn.table("curiosidades").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Curiosidades Publicadas")
+        if not data:
+            st.info("No hay curiosidades publicadas aún.")
+        else:
+            for c in data:
+                with st.expander(f"{c['titulo']}"):
+                    st.write(f"**¿Qué es?** {c['que_es']}")
+                    st.write(f"**Importancia:** {c['importancia']}")
+                    st.write(f"**Referencia:** {c['referencia']}")
+                    if st.button(f"Eliminar", key=f"del_c_{c['id']}"):
+                        conn.table("curiosidades").delete().eq("id", c['id']).execute()
+                        st.rerun()
+
+    # --- TAB 4: MITOS ---
+    with tab4:
+        st.markdown("### Agregar Mito o Falsa Doctrina")
+        with st.form("admin_mito"):
+            titulo_mito = st.text_input("Título del mito")
+            explicacion = st.text_area("Explicación bíblica", height=200)
+            
+            if st.form_submit_button("Publicar Mito", type="primary", use_container_width=True):
+                if titulo_mito and explicacion:
+                    conn.table("mitos").insert({"titulo": titulo_mito, "explicacion": explicacion}).execute()
+                    st.success("¡Mito publicado!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("mitos").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Mitos Publicados")
+        if not data:
+            st.info("No hay mitos publicados aún.")
+        else:
+            for m in data:
+                with st.expander(f"Mito: {m['titulo']}"):
+                    st.write(m['explicacion'])
+                    if st.button(f"Eliminar", key=f"del_m_{m['id']}"):
+                        conn.table("mitos").delete().eq("id", m['id']).execute()
+                        st.rerun()
+
+    # --- TAB 5: SUEÑOS ---
+    with tab5:
+        st.markdown("### Agregar Interpretación de Sueño")
+        with st.form("admin_sueno"):
+            sueno = st.text_area("Sueño del usuario", height=100)
+            interpretacion = st.text_area("Interpretación bíblica", height=150)
+            fecha_sueno = st.text_input("Fecha", value="Hoy")
+            
+            if st.form_submit_button("Publicar Interpretación", type="primary", use_container_width=True):
+                if sueno and interpretacion:
+                    conn.table("suenos").insert({"sueno": sueno, "interpretacion": interpretacion, "fecha": fecha_sueno}).execute()
+                    st.success("¡Interpretación publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("suenos").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Interpretaciones Publicadas")
+        if not data:
+            st.info("No hay interpretaciones publicadas aún.")
+        else:
+            for s in data:
+                with st.expander(f"Sueño: {s['sueno'][:50]}..."):
+                    st.write(f"**Interpretación:** {s['interpretacion']}")
+                    if st.button(f"Eliminar", key=f"del_s_{s['id']}"):
+                        conn.table("suenos").delete().eq("id", s['id']).execute()
+                        st.rerun()
 
 
 # ============================================
@@ -679,9 +849,11 @@ if LOGGED_IN:
         mostrar_curiosidades()
     elif st.session_state.pagina_actual == 'pastor':
         mostrar_pastor()
+    elif st.session_state.pagina_actual == 'suenos':
+        mostrar_suenos()
     elif st.session_state.pagina_actual == 'reflexiones':
         mostrar_reflexiones()
     elif st.session_state.pagina_actual == 'mitos':
         mostrar_mitos()
-    elif st.session_state.pagina_actual == 'favoritos':
-        mostrar_favoritos()
+    elif st.session_state.pagina_actual == 'admin':
+        mostrar_admin()
