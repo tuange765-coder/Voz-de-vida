@@ -2,3 +2,4 @@ streamlit
 supabase
 streamlit-supabase-auth-ui
 streamlit-audio-queue-player
+st-supabase-connection
