@@ -10,7 +10,7 @@ st.set_page_config(
     page_title="Palabra de Vida | App Cristiana",
     page_icon="✝️",
     layout="wide",
-    initial_sidebar_state="expanded"  # Barra lateral abierta para ver la música
+    initial_sidebar_state="expanded"
 )
 
 # ============================================
@@ -265,7 +265,6 @@ URLS_CANCIONES = [
 ]
 
 if LOGGED_IN:
-    # Barajar la lista una vez por sesión
     if 'canciones_url' not in st.session_state:
         canciones = URLS_CANCIONES.copy()
         random.shuffle(canciones)
