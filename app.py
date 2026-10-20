@@ -153,8 +153,15 @@ st.markdown(f"""
     }}
 
     /* ==========================================
-       NUEVO DISEÑO DE BOTONES ESTILO PERGAMINO
+       DISEÑO DE PESTAÑAS ESTILO PERGAMINO (PREMIUM)
        ========================================== */
+    .pergamino-container {{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }}
+    
     .pergamino-btn {{
         display: flex;
         flex-direction: column;
@@ -162,72 +169,69 @@ st.markdown(f"""
         justify-content: center;
         background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%);
         border: 2px solid #C9A961;
-        border-radius: 15px;
+        border-radius: 12px;
         padding: 20px 10px;
         text-decoration: none !important;
         color: #4A3B2A !important;
         font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        font-size: 1rem;
+        font-weight: 700;
+        font-size: 0.95rem;
         text-align: center;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.5);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.6);
         transition: all 0.3s ease;
-        margin-bottom: 10px;
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        min-height: 90px;
-        gap: 8px;
+        min-height: 110px;
+        gap: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }}
     
-    /* Efecto de borde desgastado o textura */
+    /* Efecto de textura de papel */
     .pergamino-btn::before {{
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-        opacity: 0.3;
+        opacity: 0.4;
         pointer-events: none;
+        z-index: 1;
     }}
 
     .pergamino-btn:hover {{
         background: linear-gradient(135deg, #FFFFFF 0%, #FCEFB4 100%);
         border-color: #D4AF37;
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 12px 20px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.8);
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 12px 25px rgba(212, 175, 55, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.9);
         color: #1A0F0A !important;
     }}
     
     .pergamino-btn span {{
-        font-size: 1.8rem;
+        font-size: 2rem;
         line-height: 1;
+        position: relative;
+        z-index: 2;
+    }}
+    
+    .pergamino-btn .text {{
+        position: relative;
+        z-index: 2;
+        font-size: 0.85rem;
     }}
 
-    .member-row {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 0;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-    }}
-    .member-row:last-child {{
-        border-bottom: none;
-    }}
-    .member-name {{
-        font-weight: 600;
-        color: #1A1A1A !important;
-        font-size: 1.05rem;
-    }}
-    .member-date {{
-        font-size: 0.8rem;
-        color: #1A1A1A !important;
-        background: rgba(212, 175, 55, 0.2);
-        padding: 5px 12px;
-        border-radius: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.4);
+    /* Efecto para el borde interior */
+    .pergamino-btn::after {{
+        content: "";
+        position: absolute;
+        top: 5px; left: 5px; right: 5px; bottom: 5px;
+        border: 1px dashed rgba(201, 169, 97, 0.5);
+        border-radius: 8px;
+        pointer-events: none;
+        z-index: 1;
     }}
 
-    /* Estilo especial para botones de los formularios y volver */
+    /* Botones estándar de Streamlit */
     .stButton>button {{
         background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%) !important;
         color: #4A3B2A !important;
@@ -253,6 +257,30 @@ st.markdown(f"""
         color: #4A3B2A !important;
         font-size: 0.95rem !important;
         margin: 0 !important;
+    }}
+
+    .member-row {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }}
+    .member-row:last-child {{
+        border-bottom: none;
+    }}
+    .member-name {{
+        font-weight: 600;
+        color: #1A1A1A !important;
+        font-size: 1.05rem;
+    }}
+    .member-date {{
+        font-size: 0.8rem;
+        color: #1A1A1A !important;
+        background: rgba(212, 175, 55, 0.2);
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.4);
     }}
 
     .stSelectbox label, .stNumberInput label {{
@@ -440,23 +468,34 @@ def mostrar_inicio():
         # 5. BOTONES DE EXPLORACIÓN (Diseño Pergamino HTML)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
-        b1, b2, b3 = st.columns(3)
-        with b1:
-            st.markdown('<a href="?pagina=biblia" target="_self" class="pergamino-btn"><span>📖</span> La Biblia</a>', unsafe_allow_html=True)
-        with b2:
-            st.markdown('<a href="?pagina=reflexiones" target="_self" class="pergamino-btn"><span>💭</span> Reflexiones</a>', unsafe_allow_html=True)
-        with b3:
-            st.markdown('<a href="?pagina=curiosidades" target="_self" class="pergamino-btn"><span>🔍</span> Curiosidades</a>', unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        b4, b5, b6 = st.columns(3)
-        with b4:
-            st.markdown('<a href="?pagina=pastor" target="_self" class="pergamino-btn"><span>🙋</span> Pregúntale al Pastor</a>', unsafe_allow_html=True)
-        with b5:
-            st.markdown('<a href="?pagina=mitos" target="_self" class="pergamino-btn"><span>⚠️</span> Mitos y Doctrinas</a>', unsafe_allow_html=True)
-        with b6:
-            st.markdown('<a href="?pagina=suenos" target="_self" class="pergamino-btn"><span>💭</span> Tus sueños</a>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="pergamino-container">
+            <a href="?pagina=biblia" target="_self" class="pergamino-btn">
+                <span>📖</span>
+                <div class="text">La Biblia</div>
+            </a>
+            <a href="?pagina=reflexiones" target="_self" class="pergamino-btn">
+                <span>💭</span>
+                <div class="text">Reflexiones</div>
+            </a>
+            <a href="?pagina=curiosidades" target="_self" class="pergamino-btn">
+                <span>🔍</span>
+                <div class="text">Curiosidades</div>
+            </a>
+            <a href="?pagina=pastor" target="_self" class="pergamino-btn">
+                <span>🙋</span>
+                <div class="text">Pregúntale al Pastor</div>
+            </a>
+            <a href="?pagina=mitos" target="_self" class="pergamino-btn">
+                <span>⚠️</span>
+                <div class="text">Mitos y Doctrinas</div>
+            </a>
+            <a href="?pagina=suenos" target="_self" class="pergamino-btn">
+                <span>💭</span>
+                <div class="text">Tus sueños</div>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
 
     with col_der:
         # 6. MURO DE MIEMBROS
