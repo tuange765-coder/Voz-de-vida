@@ -617,4 +617,441 @@ def mostrar_biblia():
     slug = slugs.get(libro_sel, "john")
     url = f"https://api.midvash.com/v1/rvr1960/{slug}/{capitulo_sel}"
     
-    try
+    try:
+        with st.spinner("Cargando la Palabra..."):
+            respuesta = requests.get(url)
+            respuesta.raise_for_status()
+            datos = respuesta.json()
+            versiculos_texto = datos.get("data", {}).get("verses", [])
+            
+            if not versiculos_texto:
+                st.warning("No se encontraron versículos para esta selección.")
+            else:
+                st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
+                texto_html = ""
+                for i, texto in enumerate(versiculos_texto, start=1):
+                    texto_html += f'<p style="text-align: justify; text-indent: 20px;"><strong style="color: #8B5A2B !important;">{i}.</strong> {texto}</p>'
+                
+                st.markdown(f"""
+                <div class="card-light" style="max-height: 600px; overflow-y: auto;">
+                    {texto_html}
+                </div>
+                """, unsafe_allow_html=True)
+    except Exception as e:
+        st.error(f"No se pudo cargar el capítulo. Verifica tu conexión o intenta con otro capítulo. (Error: {e})")
+
+
+# --- PÁGINA: CURIOSIDADES ---
+def mostrar_curiosidades():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔍 Curiosidades Bíblicas</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Datos históricos y arqueológicos que confirman las Escrituras</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    res = execute_query(conn.table("curiosidades").select("*").order("created_at", desc=True), ttl="1m")
+    data_curiosidades = res.data
+
+    if not data_curiosidades:
+        st.info("Aún no hay curiosidades publicadas. El administrador las agregará pronto.")
+    else:
+        for c in data_curiosidades:
+            st.markdown(f"""
+            <details>
+                <summary>{c['titulo']}</summary>
+                <div>
+                    <p><strong>¿Qué es?</strong> {c['que_es']}</p>
+                    <p><strong>¿Por qué es importante?</strong> {c['importancia']}</p>
+                    <p><strong>Referencia bíblica:</strong> {c['referencia']}</p>
+                </div>
+            </details>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="card-dark">
+        <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: PREGÚNTALE AL PASTOR ---
+def mostrar_pastor():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🙋 Pregúntale al Pastor</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Envía tu duda y recibe una respuesta bíblica</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown('<div class="section-header">📝 Envía tu pregunta</div>', unsafe_allow_html=True)
+    with st.expander("Haz clic aquí para escribir tu pregunta", expanded=True):
+        with st.form("form_pregunta"):
+            nombre = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
+            pregunta = st.text_area("Escribe tu pregunta aquí", placeholder="¿Qué significa...?", height=150)
+            
+            submitted = st.form_submit_button("Enviar Pregunta", type="primary", use_container_width=True)
+            
+            if submitted:
+                if not pregunta.strip():
+                    st.warning("Por favor, escribe una pregunta antes de enviar.")
+                else:
+                    conn.table("respuestas_pastor").insert({
+                        "pregunta": pregunta,
+                        "respuesta": "PENDIENTE",
+                        "fecha": "Hoy",
+                        "nombre_usuario": nombre if nombre else "Anónimo",
+                        "estado": "pendiente"
+                    }).execute()
+                    
+                    st.success("¡Pregunta enviada! El pastor la revisará y publicará una respuesta pronto.")
+                    st.rerun()
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-header">💬 Respuestas del Pastor</div>', unsafe_allow_html=True)
+    
+    res = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="1m")
+    data_pastor = res.data
+    
+    if not data_pastor:
+        st.info("Aún no hay respuestas publicadas. ¡Vuelve pronto!")
+    else:
+        for r in data_pastor:
+            st.markdown(f"""
+            <div class="card-light">
+                <p style="font-weight: 600; color: #8B5A2B !important; margin-bottom: 5px;">Pregunta: {r['pregunta']}</p>
+                <p style="font-size: 0.9rem; color: #5C3A21 !important; margin-bottom: 10px; font-style: italic;">{r.get('fecha', '')}</p>
+                <p><strong>Respuesta:</strong> {r['respuesta']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: SUEÑOS ---
+def mostrar_suenos():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Tus sueños significan algo</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Comparte tu sueño y recibe una interpretación bíblica</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown('<div class="section-header">📝 Envía tu sueño</div>', unsafe_allow_html=True)
+    with st.expander("Haz clic aquí para escribir tu sueño", expanded=True):
+        with st.form("form_sueno"):
+            nombre_sueno = st.text_input("Tu nombre (opcional)", placeholder="Ej: Juan Pérez")
+            sueno = st.text_area("Describe tu sueño aquí", placeholder="Soñé que...", height=150)
+            
+            submitted_sueno = st.form_submit_button("Enviar Sueño", type="primary", use_container_width=True)
+            
+            if submitted_sueno:
+                if not sueno.strip():
+                    st.warning("Por favor, describe tu sueño antes de enviar.")
+                else:
+                    conn.table("suenos").insert({
+                        "sueno": sueno,
+                        "interpretacion": "PENDIENTE",
+                        "fecha": "Hoy",
+                        "nombre_usuario": nombre_sueno if nombre_sueno else "Anónimo",
+                        "estado": "pendiente"
+                    }).execute()
+                    
+                    st.success("¡Sueño enviado! El pastor lo revisará y publicará una respuesta pronto.")
+                    st.rerun()
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-header">💬 Interpretaciones publicadas</div>', unsafe_allow_html=True)
+    
+    res = execute_query(conn.table("suenos").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="1m")
+    data_suenos = res.data
+    
+    if not data_suenos:
+        st.info("Aún no hay interpretaciones publicadas. ¡Vuelve pronto!")
+    else:
+        for s in data_suenos:
+            st.markdown(f"""
+            <div class="card-light">
+                <p style="font-weight: 600; color: #8B5A2B !important; margin-bottom: 5px;">Sueño: {s['sueno']}</p>
+                <p style="font-size: 0.9rem; color: #5C3A21 !important; margin-bottom: 10px; font-style: italic;">{s.get('fecha', '')}</p>
+                <p><strong>Interpretación:</strong> {s['interpretacion']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: REFLEXIONES ---
+def mostrar_reflexiones():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">💭 Reflexiones</h1>', unsafe_allow_html=True)
+    
+    res = execute_query(conn.table("reflexiones").select("*").order("created_at", desc=True), ttl="1m")
+    data_ref = res.data
+    
+    if not data_ref:
+        st.info("Próximamente: Devocionales diarios.")
+    else:
+        for r in data_ref:
+            st.markdown(f"""
+            <div class="card-light">
+                <h3 style="color: #8B5A2B !important; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 10px;">{r['titulo']}</h3>
+                <p style="text-align: justify;">{r['contenido']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: MITOS ---
+def mostrar_mitos():
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">⚠️ Mitos y Doctrinas</h1>', unsafe_allow_html=True)
+    
+    res = execute_query(conn.table("mitos").select("*").order("created_at", desc=True), ttl="1m")
+    data_mitos = res.data
+    
+    if not data_mitos:
+        st.info("Próximamente: Aclaraciones bíblicas.")
+    else:
+        for m in data_mitos:
+            st.markdown(f"""
+            <div class="card-light">
+                <h3 style="color: #8B5A2B !important; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 10px;">{m['titulo']}</h3>
+                <p style="text-align: justify;">{m['explicacion']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# --- PÁGINA: ADMIN ---
+def mostrar_admin():
+    if not st.session_state.admin_logged:
+        st.error("Debes iniciar sesión como administrador para acceder a esta página.")
+        if st.button("Volver al Inicio"):
+            cambiar_pagina("inicio")
+        return
+
+    if st.button("⬅️ Volver al Inicio"):
+        cambiar_pagina("inicio")
+    
+    st.markdown('<h1 class="hero-title" style="font-size: 3rem;">🔐 Panel de Administrador</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Gestiona el contenido de la app</p>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños"])
+
+    with tab1:
+        st.markdown("### Preguntas Pendientes")
+        pendientes = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "pendiente"), ttl="0").data
+        if not pendientes:
+            st.info("No hay preguntas pendientes.")
+        else:
+            for p in pendientes:
+                with st.expander(f"Pregunta de {p.get('nombre_usuario', 'Anónimo')}: {p['pregunta'][:50]}..."):
+                    st.write(f"**Pregunta:** {p['pregunta']}")
+                    respuesta = st.text_area("Tu respuesta", key=f"resp_{p['id']}")
+                    if st.button("Publicar Respuesta", key=f"btn_pub_{p['id']}"):
+                        if respuesta.strip():
+                            conn.table("respuestas_pastor").update({
+                                "respuesta": respuesta,
+                                "estado": "respondido"
+                            }).eq("id", p['id']).execute()
+                            st.success("¡Respuesta publicada!")
+                            st.rerun()
+                        else:
+                            st.warning("Escribe una respuesta antes de publicar.")
+
+        st.markdown("---")
+        st.markdown("### Agregar Respuesta Manual")
+        with st.form("admin_pastor"):
+            pregunta = st.text_area("Pregunta del usuario", height=80)
+            respuesta = st.text_area("Tu respuesta", height=150)
+            fecha = st.text_input("Fecha", value="Hoy")
+            
+            if st.form_submit_button("Publicar Respuesta", type="primary", use_container_width=True):
+                if pregunta and respuesta:
+                    conn.table("respuestas_pastor").insert({
+                        "pregunta": pregunta, 
+                        "respuesta": respuesta, 
+                        "fecha": fecha,
+                        "estado": "respondido"
+                    }).execute()
+                    st.success("¡Respuesta publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("respuestas_pastor").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Respuestas Publicadas")
+        if not data:
+            st.info("No hay respuestas publicadas aún.")
+        else:
+            for r in data:
+                with st.expander(f"Pregunta: {r['pregunta'][:50]}..."):
+                    st.write(f"**Respuesta:** {r['respuesta']}")
+                    if st.button(f"Eliminar", key=f"del_p_{r['id']}"):
+                        conn.table("respuestas_pastor").delete().eq("id", r['id']).execute()
+                        st.rerun()
+
+    with tab2:
+        st.markdown("### Agregar Reflexión")
+        with st.form("admin_reflexion"):
+            titulo_ref = st.text_input("Título")
+            contenido_ref = st.text_area("Contenido", height=200)
+            
+            if st.form_submit_button("Publicar Reflexión", type="primary", use_container_width=True):
+                if titulo_ref and contenido_ref:
+                    conn.table("reflexiones").insert({"titulo": titulo_ref, "contenido": contenido_ref}).execute()
+                    st.success("¡Reflexión publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("reflexiones").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Reflexiones Publicadas")
+        if not data:
+            st.info("No hay reflexiones publicadas aún.")
+        else:
+            for r in data:
+                with st.expander(f"Reflexión: {r['titulo']}"):
+                    st.write(r['contenido'])
+                    if st.button(f"Eliminar", key=f"del_r_{r['id']}"):
+                        conn.table("reflexiones").delete().eq("id", r['id']).execute()
+                        st.rerun()
+
+    with tab3:
+        st.markdown("### Agregar Curiosidad")
+        with st.form("admin_curiosidad"):
+            titulo_cur = st.text_input("Título")
+            que_es = st.text_area("¿Qué es?", height=100)
+            importancia = st.text_area("¿Por qué es importante?", height=100)
+            referencia = st.text_input("Referencia bíblica")
+            
+            if st.form_submit_button("Publicar Curiosidad", type="primary", use_container_width=True):
+                if titulo_cur and que_es:
+                    conn.table("curiosidades").insert({"titulo": titulo_cur, "que_es": que_es, "importancia": importancia, "referencia": referencia}).execute()
+                    st.success("¡Curiosidad publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa los campos obligatorios.")
+
+        data = execute_query(conn.table("curiosidades").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Curiosidades Publicadas")
+        if not data:
+            st.info("No hay curiosidades publicadas aún.")
+        else:
+            for c in data:
+                with st.expander(f"{c['titulo']}"):
+                    st.write(f"**¿Qué es?** {c['que_es']}")
+                    st.write(f"**Importancia:** {c['importancia']}")
+                    st.write(f"**Referencia:** {c['referencia']}")
+                    if st.button(f"Eliminar", key=f"del_c_{c['id']}"):
+                        conn.table("curiosidades").delete().eq("id", c['id']).execute()
+                        st.rerun()
+
+    with tab4:
+        st.markdown("### Agregar Mito o Falsa Doctrina")
+        with st.form("admin_mito"):
+            titulo_mito = st.text_input("Título del mito")
+            explicacion = st.text_area("Explicación bíblica", height=200)
+            
+            if st.form_submit_button("Publicar Mito", type="primary", use_container_width=True):
+                if titulo_mito and explicacion:
+                    conn.table("mitos").insert({"titulo": titulo_mito, "explicacion": explicacion}).execute()
+                    st.success("¡Mito publicado!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("mitos").select("*").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Mitos Publicados")
+        if not data:
+            st.info("No hay mitos publicados aún.")
+        else:
+            for m in data:
+                with st.expander(f"Mito: {m['titulo']}"):
+                    st.write(m['explicacion'])
+                    if st.button(f"Eliminar", key=f"del_m_{m['id']}"):
+                        conn.table("mitos").delete().eq("id", m['id']).execute()
+                        st.rerun()
+
+    with tab5:
+        st.markdown("### Sueños Pendientes")
+        pendientes_suenos = execute_query(conn.table("suenos").select("*").eq("estado", "pendiente"), ttl="0").data
+        if not pendientes_suenos:
+            st.info("No hay sueños pendientes.")
+        else:
+            for s in pendientes_suenos:
+                with st.expander(f"Sueño de {s.get('nombre_usuario', 'Anónimo')}: {s['sueno'][:50]}..."):
+                    st.write(f"**Sueño:** {s['sueno']}")
+                    interpretacion = st.text_area("Interpretación", key=f"interp_{s['id']}")
+                    if st.button("Publicar Interpretación", key=f"btn_interp_{s['id']}"):
+                        if interpretacion.strip():
+                            conn.table("suenos").update({
+                                "interpretacion": interpretacion,
+                                "estado": "respondido"
+                            }).eq("id", s['id']).execute()
+                            st.success("¡Interpretación publicada!")
+                            st.rerun()
+                        else:
+                            st.warning("Escribe una interpretación antes de publicar.")
+
+        st.markdown("---")
+        st.markdown("### Agregar Interpretación Manual")
+        with st.form("admin_sueno"):
+            sueno = st.text_area("Sueño del usuario", height=100)
+            interpretacion = st.text_area("Interpretación bíblica", height=150)
+            fecha_sueno = st.text_input("Fecha", value="Hoy")
+            
+            if st.form_submit_button("Publicar Interpretación", type="primary", use_container_width=True):
+                if sueno and interpretacion:
+                    conn.table("suenos").insert({
+                        "sueno": sueno, 
+                        "interpretacion": interpretacion, 
+                        "fecha": fecha_sueno,
+                        "estado": "respondido"
+                    }).execute()
+                    st.success("¡Interpretación publicada!")
+                    st.rerun()
+                else:
+                    st.warning("Completa todos los campos.")
+
+        data = execute_query(conn.table("suenos").select("*").eq("estado", "respondido").order("created_at", desc=True), ttl="0").data
+        st.markdown("### Interpretaciones Publicadas")
+        if not data:
+            st.info("No hay interpretaciones publicadas aún.")
+        else:
+            for s in data:
+                with st.expander(f"Sueño: {s['sueno'][:50]}..."):
+                    st.write(f"**Interpretación:** {s['interpretacion']}")
+                    if st.button(f"Eliminar", key=f"del_s_{s['id']}"):
+                        conn.table("suenos").delete().eq("id", s['id']).execute()
+                        st.rerun()
+
+
+# ============================================
+# 8. ENRUTADOR PRINCIPAL
+# ============================================
+# Lógica para manejar los botones HTML de las pestañas
+if "pagina" in st.query_params:
+    pagina_solicitada = st.query_params["pagina"]
+    if pagina_solicitada != st.session_state.pagina_actual:
+        st.session_state.pagina_actual = pagina_solicitada
+        st.query_params.clear() # Limpiamos la URL
+        st.rerun()
+
+# Enrutador principal
+if st.session_state.pagina_actual == 'inicio':
+    mostrar_inicio()
+elif st.session_state.pagina_actual == 'biblia':
+    mostrar_biblia()
+elif st.session_state.pagina_actual == 'curiosidades':
+    mostrar_curiosidades()
+elif st.session_state.pagina_actual == 'pastor':
+    mostrar_pastor()
+elif st.session_state.pagina_actual == 'suenos':
+    mostrar_suenos()
+elif st.session_state.pagina_actual == 'reflexiones':
+    mostrar_reflexiones()
+elif st.session_state.pagina_actual == 'mitos':
+    mostrar_mitos()
+elif st.session_state.pagina_actual == 'admin':
+    mostrar_admin()
