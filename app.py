@@ -82,15 +82,38 @@ st.markdown(f"""
 
     .section-header {{ font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: #FDFBF7 !important; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 10px; }}
 
+    /* ESTILO PARA LOS BOTONES NATIVOS DE STREAMLIT (EFECTO PAPIRO) */
     .stButton>button {{
-        background: #FDFBF7 !important; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png') !important;
-        color: #2C1A0F !important; border: 2px solid #C9A961 !important; border-radius: 8px !important;
-        padding: 15px 20px !important; font-weight: 700 !important; font-family: 'Cormorant Garamond', serif !important;
-        font-size: 1.2rem !important; transition: all 0.3s ease !important; width: 100% !important; text-align: center !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+        background: #EFE3C3 !important; 
+        background-image: radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%), url('https://www.transparenttextures.com/patterns/paper-fibers.png') !important;
+        color: #2C1A0F !important; 
+        border: 2px solid #A67B5B !important; 
+        border-radius: 4px !important;
+        padding: 20px 10px !important; 
+        font-weight: 700 !important; 
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: 1.1rem !important; 
+        transition: all 0.3s ease !important; 
+        width: 100% !important; 
+        text-align: center !important;
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(139, 69, 19, 0.2) !important;
+        min-height: 110px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }}
-    .stButton>button:hover {{ background: #FFF3E0 !important; border-color: #D4AF37 !important; transform: translateY(-2px) !important; box-shadow: 0 8px 15px rgba(212, 175, 55, 0.4) !important; color: #1A0F0A !important; }}
-    .stButton>button p {{ color: #2C1A0F !important; font-size: 1.2rem !important; margin: 0 !important; }}
+    .stButton>button:hover {{
+        background: #FFF3E0 !important; 
+        border-color: #D4AF37 !important; 
+        transform: translateY(-4px) scale(1.02) !important; 
+        box-shadow: 6px 8px 15px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.3) !important;
+    }}
+    .stButton>button p {{
+        color: #2C1A0F !important;
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+    }}
 
     .member-row {{ display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }}
     .member-row:last-child {{ border-bottom: none; }}
@@ -111,11 +134,9 @@ st.markdown(f"""
 # ============================================
 # 4. LÓGICA DE FILTRO DE ACCESO (VISITANTES)
 # ============================================
-# Comprobar si el usuario ya se registró en esta sesión o en la URL
 if 'acceso_concedido' not in st.session_state:
     st.session_state.acceso_concedido = False
 
-# Si el usuario ya está en la URL (porque navegó), le damos acceso directo
 if "usuario_registrado" in st.query_params:
     st.session_state.acceso_concedido = True
 
@@ -141,7 +162,6 @@ if not st.session_state.acceso_concedido:
                 else:
                     st.success(f"¡Bienvenido de nuevo, {nombre}!")
                 
-                # Guardamos en la URL que el usuario ya está registrado para que no se le vuelva a pedir
                 st.query_params["usuario_registrado"] = nombre.strip()
                 st.session_state.acceso_concedido = True
                 st.rerun()
@@ -274,44 +294,32 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # BOTONES DE EXPLORACIÓN
+        # BOTONES DE EXPLORACIÓN (NATIVOS CON ESTILO PAPIRO)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
-        html_botones = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
-            body { margin: 0; padding: 0; background: transparent; }
-            .papiro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 10px; }
-            .papiro-btn {
-                display: flex; flex-direction: column; align-items: center; justify-content: center;
-                background: #EFE3C3; background-image: radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%), url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-                border: 2px solid #A67B5B; border-radius: 4px; padding: 20px 10px; text-decoration: none; color: #2C1A0F;
-                font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; text-align: center;
-                box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(139, 69, 19, 0.2), inset 0 0 3px rgba(255, 255, 255, 0.5);
-                transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; min-height: 110px; text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
-            }
-            .papiro-btn::before { content: ""; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px dashed rgba(166, 123, 91, 0.5); pointer-events: none; }
-            .papiro-btn:hover { background: #FFF3E0; border-color: #D4AF37; transform: translateY(-4px) scale(1.02); box-shadow: 6px 8px 15px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 3px rgba(255, 255, 255, 0.9); color: #1A0F0A; }
-            .papiro-btn .icono { font-size: 1.8rem; margin-bottom: 8px; position: relative; z-index: 2; color: #8B4513; text-shadow: 1px 1px 1px rgba(255,255,255,0.5); }
-            .papiro-btn .texto { position: relative; z-index: 2; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; }
-        </style>
-        </head>
-        <body>
-            <div class="papiro-grid">
-                <a href="?pagina=biblia&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">📖</span><div class="texto">La Biblia</div></a>
-                <a href="?pagina=reflexiones&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Reflexiones</div></a>
-                <a href="?pagina=curiosidades&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">🔍</span><div class="texto">Curiosidades</div></a>
-                <a href="?pagina=pastor&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">🙋</span><div class="texto">Al Pastor</div></a>
-                <a href="?pagina=mitos&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">⚠️</span><div class="texto">Mitos</div></a>
-                <a href="?pagina=suenos&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Sueños</div></a>
-            </div>
-        </body>
-        </html>
-        """.replace("{st.query_params.get('usuario_registrado', '')}", str(st.query_params.get("usuario_registrado", "")))
-        components.html(html_botones, height=380, scrolling=False)
+        b1, b2, b3 = st.columns(3)
+        with b1:
+            if st.button("📖\n\nLa Biblia", use_container_width=True):
+                cambiar_pagina("biblia")
+        with b2:
+            if st.button("💭\n\nReflexiones", use_container_width=True):
+                cambiar_pagina("reflexiones")
+        with b3:
+            if st.button("🔍\n\nCuriosidades", use_container_width=True):
+                cambiar_pagina("curiosidades")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        b4, b5, b6 = st.columns(3)
+        with b4:
+            if st.button("🙋\n\nAl Pastor", use_container_width=True):
+                cambiar_pagina("pastor")
+        with b5:
+            if st.button("⚠️\n\nMitos", use_container_width=True):
+                cambiar_pagina("mitos")
+        with b6:
+            if st.button("💭\n\nSueños", use_container_width=True):
+                cambiar_pagina("suenos")
 
     with col_der:
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
