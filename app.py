@@ -229,7 +229,7 @@ def mostrar_inicio():
         st.markdown("<br>", unsafe_allow_html=True)
 
         # LA DOSIS DIARIA (MODO LECTURA Y COMENTARIOS)
-        st.markdown('<div class="section-header">💊 La Dosis Diaria</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">💊 La Dosis Diaria <span style="font-size:1rem; color:#D4AF37;">(Configurado por el Administrador)</span></div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 25px;">', unsafe_allow_html=True)
         
         res_dosis = execute_query(conn.table("dosis_diaria").select("*").limit(1), ttl="0")
