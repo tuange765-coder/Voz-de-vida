@@ -38,14 +38,16 @@ es_admin_url = query_params.get("admin") == "true"
 
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap');
+    /* Fuentes Clásicas */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
 
     .stApp {{
-        background-image: linear-gradient(rgba(40, 20, 10, 0.7), rgba(20, 10, 5, 0.9)), url("{IMG_URL}");
+        background-image: linear-gradient(rgba(30, 15, 5, 0.85), rgba(15, 5, 0, 0.95)), url("{IMG_URL}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'EB Garamond', serif;
+        color: #3E2723;
     }}
 
     #MainMenu {{visibility: hidden;}}
@@ -60,197 +62,125 @@ st.markdown(f"""
     {'section[data-testid="stSidebar"] {display: block !important;}' if es_admin_url else ''}
 
     h1, h2, h3 {{
-        font-family: 'Cormorant Garamond', serif;
+        font-family: 'Playfair Display', serif;
         color: #FDFBF7 !important;
+        letter-spacing: 1px;
     }}
 
     .hero-title {{
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 4.5rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 5rem;
         font-weight: 700;
         color: #FDFBF7 !important;
         text-align: center;
         margin-bottom: 0;
         line-height: 1.1;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        text-shadow: 3px 3px 10px rgba(0,0,0,0.8);
     }}
     .hero-subtitle {{
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         color: #D4AF37 !important;
         margin-top: 10px;
-        font-weight: 500;
-        letter-spacing: 2px;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+        font-weight: 400;
+        letter-spacing: 3px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.9);
+        font-style: italic;
     }}
 
-    .card-light {{
-        background: #FDFBF7 !important;
-        border: 1px solid rgba(212, 175, 55, 0.4);
-        border-radius: 20px;
+    /* ==========================================
+       TARJETAS ESTILO PÁGINA DE LIBRO ANTIGUO
+       ========================================== */
+    .book-card {{
+        background-color: #F4E8D1; /* Pergamino */
+        background-image: 
+            linear-gradient(to right, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,0.05) 100%),
+            url('https://www.transparenttextures.com/patterns/old-map.png');
+        border: 1px solid #8B5A2B; /* Borde de cuero */
+        border-radius: 0px; /* Bordes rectos */
         padding: 30px;
         margin-bottom: 25px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        box-shadow: 
+            5px 5px 15px rgba(0, 0, 0, 0.5),
+            inset 0 0 20px rgba(139, 69, 19, 0.1);
+        color: #2C1A0F !important;
+        position: relative;
     }}
-    .card-light *, 
-    .card-light p, .card-light span, .card-light div, .card-light strong, .card-light li,
-    .card-light h1, .card-light h2, .card-light h3, .card-light h4 {{
-        color: #1A1A1A !important;
+    
+    /* Efecto de margen interno */
+    .book-card::before {{
+        content: "";
+        position: absolute;
+        top: 10px; left: 10px; right: 10px; bottom: 10px;
+        border: 1px solid rgba(139, 90, 43, 0.3);
+        pointer-events: none;
     }}
 
-    .verse-light {{
-        background: #FDFBF7 !important;
-        border-left: 5px solid #D4AF37;
-        border-radius: 16px;
-        padding: 40px;
-        margin: 20px 0 40px 0;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    .book-card p, .book-card span, .book-card div, .book-card strong {{
+        color: #2C1A0F !important;
+        font-family: 'EB Garamond', serif;
+        font-size: 1.15rem;
+        line-height: 1.8;
     }}
-    .verse-light * {{
-        color: #1A1A1A !important;
-    }}
-    .verse-light .verse-text {{
-        font-family: 'Cormorant Garamond', serif;
+
+    .verse-text {{
+        font-family: 'Playfair Display', serif;
         font-size: 1.8rem;
         font-style: italic;
         line-height: 1.5;
         text-align: center;
+        color: #2C1A0F !important;
     }}
-    .verse-light .verse-ref {{
+    
+    .verse-ref {{
         display: block;
         margin-top: 20px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.9rem;
+        font-family: 'EB Garamond', serif;
+        font-size: 1rem;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: #D4AF37 !important;
+        color: #8B5A2B !important;
         font-weight: 600;
         text-align: center;
     }}
 
-    .card-dark {{
-        background: rgba(30, 20, 15, 0.85) !important;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 20px;
-        padding: 30px;
-        margin-bottom: 25px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-    }}
-    .card-dark p, .card-dark span, .card-dark div, .card-dark li {{
-        color: #FDFBF7 !important;
-    }}
-
     .section-header {{
-        font-size: 1.4rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem;
         font-weight: 600;
         color: #FDFBF7 !important;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
         gap: 12px;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        padding-bottom: 10px;
     }}
 
     /* ==========================================
-       DISEÑO DE PESTAÑAS ESTILO PAPIRO (PREMIUM)
+       BOTONES ESTILO MARCADOR DE LIBRO
        ========================================== */
-    .papiro-grid {{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-        margin-bottom: 20px;
-    }}
-    
-    .papiro-btn {{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #EFE3C3; /* Tono pergamino envejecido */
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
-            radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
-            url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Textura sutil */
-        border: 1px solid #A67B5B; /* Borde madera oscuro */
-        border-radius: 4px;
-        padding: 20px 10px;
-        text-decoration: none !important;
-        color: #2C1A0F !important; /* Marrón muy oscuro, casi negro */
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 1.1rem;
-        text-align: center;
-        box-shadow: 
-            2px 2px 5px rgba(0, 0, 0, 0.4),
-            inset 0 0 15px rgba(139, 69, 19, 0.2),
-            inset 0 0 3px rgba(255, 255, 255, 0.5);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        min-height: 110px;
-        text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
-    }}
-    
-    /* Efecto de borde desgastado o textura de papiro */
-    .papiro-btn::before {{
-        content: "";
-        position: absolute;
-        top: 4px; left: 4px; right: 4px; bottom: 4px;
-        border: 1px dashed rgba(166, 123, 91, 0.4);
-        pointer-events: none;
-    }}
-
-    .papiro-btn:hover {{
-        background: #F8EED8;
-        border-color: #D4AF37;
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 
-            4px 6px 12px rgba(0, 0, 0, 0.5),
-            inset 0 0 20px rgba(212, 175, 55, 0.3),
-            inset 0 0 3px rgba(255, 255, 255, 0.8);
-        color: #1A0F0A !important;
-    }}
-    
-    .papiro-btn .icono {{
-        font-size: 1.8rem;
-        margin-bottom: 8px;
-        position: relative;
-        z-index: 2;
-        color: #8B4513 !important; /* Color sepia para los iconos */
-        text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-    }}
-    
-    .papiro-btn .texto {{
-        position: relative;
-        z-index: 2;
-        font-size: 0.95rem;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }}
-
-    /* Botones estándar de Streamlit (formularios, volver) */
     .stButton>button {{
         background: #EFE3C3 !important;
         background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png') !important;
         color: #2C1A0F !important;
-        border: 1px solid #A67B5B !important;
-        border-radius: 4px !important;
+        border: 1px solid #8B5A2B !important;
+        border-radius: 0px !important;
         padding: 15px 20px !important;
-        font-weight: 700 !important;
-        font-family: 'Cormorant Garamond', serif !important;
+        font-weight: 600 !important;
+        font-family: 'Playfair Display', serif !important;
         font-size: 1.1rem !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
         text-align: center !important;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4) !important;
     }}
     .stButton>button:hover {{
         background: #F8EED8 !important;
         border-color: #D4AF37 !important;
         transform: translateY(-2px) !important;
-        box-shadow: 4px 4px 10px rgba(212, 175, 55, 0.4) !important;
+        box-shadow: 5px 5px 15px rgba(212, 175, 55, 0.4) !important;
         color: #1A0F0A !important;
     }}
     .stButton>button p {{
@@ -264,61 +194,63 @@ st.markdown(f"""
         justify-content: space-between;
         align-items: center;
         padding: 15px 0;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        border-bottom: 1px solid rgba(139, 90, 43, 0.3);
     }}
     .member-row:last-child {{
         border-bottom: none;
     }}
     .member-name {{
         font-weight: 600;
-        color: #1A1A1A !important;
-        font-size: 1.05rem;
+        color: #2C1A0F !important;
+        font-size: 1.1rem;
     }}
     .member-date {{
-        font-size: 0.8rem;
-        color: #1A1A1A !important;
-        background: rgba(212, 175, 55, 0.2);
-        padding: 5px 12px;
-        border-radius: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.4);
+        font-size: 0.9rem;
+        color: #8B5A2B !important;
+        font-style: italic;
     }}
 
+    /* Ajustes para inputs */
     .stSelectbox label, .stNumberInput label {{
         color: #FDFBF7 !important;
+        font-family: 'EB Garamond', serif;
+        font-size: 1.1rem;
     }}
     .stSelectbox div[data-baseweb="select"] > div,
     .stNumberInput input {{
-        background-color: #FDFBF7 !important;
-        color: #1A1A1A !important;
-        border-radius: 8px;
+        background-color: #F4E8D1 !important;
+        color: #2C1A0F !important;
+        border-radius: 0px;
+        border: 1px solid #8B5A2B;
     }}
     .stSelectbox div[data-baseweb="select"] *,
     .stNumberInput input {{
-        color: #1A1A1A !important;
+        color: #2C1A0F !important;
     }}
 
     details {{
-        background: #FDFBF7 !important;
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        border-radius: 12px;
+        background: #F4E8D1 !important;
+        border: 1px solid #8B5A2B;
+        border-radius: 0px;
         padding: 15px 20px;
         margin-bottom: 15px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
     }}
     summary {{
         font-weight: 600;
-        color: #1A1A1A !important;
-        font-size: 1.1rem;
+        color: #2C1A0F !important;
+        font-size: 1.2rem;
         cursor: pointer;
         outline: none;
+        font-family: 'Playfair Display', serif;
     }}
     details[open] summary {{
         margin-bottom: 15px;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        border-bottom: 1px solid rgba(139, 90, 43, 0.3);
         padding-bottom: 10px;
     }}
     details p, details strong, details div {{
-        color: #1A1A1A !important;
+        color: #2C1A0F !important;
         line-height: 1.6;
     }}
 </style>
@@ -353,14 +285,13 @@ if 'indice_video' not in st.session_state:
     st.session_state.indice_video = 0
 
 def obtener_video_id(url):
-    """Extrae el ID del video de un enlace de YouTube."""
     if "v=" in url:
         return url.split("v=")[1].split("&")[0]
     elif "youtu.be/" in url:
         return url.split("youtu.be/")[1].split("?")[0]
     return url
 
-# La barra lateral solo se muestra si se usa el truco ?admin=true
+# Barra lateral (Admin)
 with st.sidebar:
     st.markdown("### 🔐 Acceso Administrador")
     if not st.session_state.admin_logged:
@@ -392,39 +323,36 @@ def mostrar_inicio():
     col_izq, col_der = st.columns([2.2, 1], gap="large")
 
     with col_izq:
-        # 1. Versículo del día
+        # 1. Versículo del día (Estilo Página de Libro)
         st.markdown("""
-        <div class="verse-light">
+        <div class="book-card">
             <div class="verse-text">"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."</div>
             <span class="verse-ref">Juan 3:16 — Versículo del día</span>
         </div>
         """, unsafe_allow_html=True)
 
-        # 2. Oración de la mañana
+        # 2. Oración de la mañana (Estilo Página de Libro)
         st.markdown('<div class="section-header">🙏 Oración de la Mañana</div>', unsafe_allow_html=True)
         st.markdown("""
-        <div class="card-light">
-            <p style="font-size: 1.15rem; line-height: 1.8; margin: 0; font-weight: 400; font-style: italic;">
+        <div class="book-card">
+            <p style="font-style: italic; text-align: justify;">
             Señor, gracias por este nuevo día que me regalas. Guía mis pasos, ilumina mi mente y guarda mi corazón en tu verdad. Que cada palabra que salga de mi boca sea agradable a ti, y que cada acción refleje tu amor. Amén.
             </p>
         </div>
         """, unsafe_allow_html=True)
 
-        # 3. APOYAR LA OBRA
+        # 3. APOYAR LA OBRA (Estilo Página de Libro)
         st.markdown('<div class="section-header">☕ Apoyar la Obra</div>', unsafe_allow_html=True)
         st.markdown("""
-        <div class="card-light" style="padding: 20px; margin-bottom: 15px;">
-            <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px;">
-                <strong>Si crees que mi trabajo es edificante, haz tu donación para seguir adelante.</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único, destinado a mantener esta herramienta gratuita para todos.
+        <div class="book-card">
+            <p style="font-size: 1rem; text-align: justify;">
+                <strong>Si crees que mi trabajo es edificante, haz tu donación para seguir adelante.</strong> Esta contribución no es un diezmo ni una ofrenda mensual. Es un aporte voluntario y único.
             </p>
-            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
-                Si ud quiere hacer una donación voluntaria, comuníquese vía WhatsApp por el <strong>04242004015</strong>.
+            <p style="font-size: 1rem; margin-top: 10px;">
+                Comuníquese vía WhatsApp por el <strong>04242004015</strong>.
             </p>
             <a href="https://wa.me/584242004015" target="_blank" style="text-decoration: none;">
-                <div style="background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.6); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
+                <div style="background: #8B5A2B; color: #F4E8D1; text-align: center; padding: 12px; border: 1px solid #2C1A0F; font-weight: 700; font-family: 'EB Garamond', serif; font-size: 1.1rem; cursor: pointer; margin-top: 15px;">
                     Contactar por WhatsApp
                 </div>
             </a>
@@ -433,16 +361,16 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 4. REPRODUCTOR DE MÚSICA
+        # 4. REPRODUCTOR DE MÚSICA (Estilo Página de Libro)
         st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
-        st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
+        st.markdown('<div class="book-card">', unsafe_allow_html=True)
         
         if URLS_YOUTUBE:
             url_actual = URLS_YOUTUBE[st.session_state.indice_video]
             video_id = obtener_video_id(url_actual)
             
             youtube_iframe = f"""
-            <div style="display: flex; justify-content: center;">
+            <div style="display: flex; justify-content: center; border: 2px solid #8B5A2B; padding: 5px; background: #000;">
                 <iframe width="50%" height="250" 
                         src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
                         frameborder="0" 
@@ -451,7 +379,7 @@ def mostrar_inicio():
                 </iframe>
             </div>
             """
-            components.html(youtube_iframe, height=260)
+            components.html(youtube_iframe, height=270)
             
             if st.button("⏭️ Siguiente Canción", use_container_width=True):
                 st.session_state.indice_video = (st.session_state.indice_video + 1) % len(URLS_YOUTUBE)
@@ -465,8 +393,8 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN (Diseño Papiro HTML en Iframe)
-        st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
+        # 5. BOTONES DE EXPLORACIÓN (Estilo Marcadores de Libro en HTML)
+        st.markdown('<div class="section-header">📖 Índice de la Palabra</div>', unsafe_allow_html=True)
         
         # Usamos un iframe para que Streamlit no toque el diseño
         html_botones = """
@@ -474,127 +402,87 @@ def mostrar_inicio():
         <html>
         <head>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
             
             body {
                 margin: 0;
                 padding: 0;
                 background: transparent;
+                font-family: 'Playfair Display', serif;
             }
             
-            .papiro-grid {
+            .book-index {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
+                gap: 10px;
                 padding: 10px;
             }
             
-            .papiro-btn {
+            .book-tab {
                 display: flex;
-                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                background: #EFE3C3;
-                background-image: 
-                    radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
-                    radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
-                    url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-                border: 1px solid #A67B5B;
-                border-radius: 4px;
-                padding: 20px 10px;
+                background: #F4E8D1;
+                background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+                border: 1px solid #8B5A2B;
+                border-left: 5px solid #5C3A21; /* Efecto de lomo */
+                padding: 15px;
                 text-decoration: none;
                 color: #2C1A0F;
-                font-family: 'Cormorant Garamond', serif;
-                font-weight: 700;
                 font-size: 1.1rem;
                 text-align: center;
-                box-shadow: 
-                    2px 2px 5px rgba(0, 0, 0, 0.4),
-                    inset 0 0 15px rgba(139, 69, 19, 0.2),
-                    inset 0 0 3px rgba(255, 255, 255, 0.5);
-                transition: all 0.3s ease;
+                box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+                transition: all 0.2s ease;
                 cursor: pointer;
-                position: relative;
-                overflow: hidden;
-                min-height: 110px;
-                text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
-            }
-            
-            .papiro-btn::before {
-                content: "";
-                position: absolute;
-                top: 4px; left: 4px; right: 4px; bottom: 4px;
-                border: 1px dashed rgba(166, 123, 91, 0.4);
-                pointer-events: none;
+                height: 80px;
             }
 
-            .papiro-btn:hover {
-                background: #F8EED8;
+            .book-tab:hover {
+                background: #FFF3E0;
+                transform: translateX(5px);
                 border-color: #D4AF37;
-                transform: translateY(-4px) scale(1.02);
-                box-shadow: 
-                    4px 6px 12px rgba(0, 0, 0, 0.5),
-                    inset 0 0 20px rgba(212, 175, 55, 0.3),
-                    inset 0 0 3px rgba(255, 255, 255, 0.8);
-                color: #1A0F0A;
+                box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
             }
             
-            .papiro-btn .icono {
-                font-size: 1.8rem;
-                margin-bottom: 8px;
-                position: relative;
-                z-index: 2;
-                color: #8B4513;
-                text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-            }
-            
-            .papiro-btn .texto {
-                position: relative;
-                z-index: 2;
-                font-size: 0.95rem;
-                letter-spacing: 0.5px;
-                text-transform: uppercase;
+            .book-tab span {
+                margin-right: 10px;
+                font-size: 1.3rem;
+                color: #8B5A2B;
             }
         </style>
         </head>
         <body>
-            <div class="papiro-grid">
-                <a href="?pagina=biblia" target="_self" class="papiro-btn">
-                    <span class="icono">📖</span>
-                    <div class="texto">La Biblia</div>
+            <div class="book-index">
+                <a href="?pagina=biblia" target="_self" class="book-tab">
+                    <span>📖</span> La Biblia
                 </a>
-                <a href="?pagina=reflexiones" target="_self" class="papiro-btn">
-                    <span class="icono">💭</span>
-                    <div class="texto">Reflexiones</div>
+                <a href="?pagina=reflexiones" target="_self" class="book-tab">
+                    <span>💭</span> Reflexiones
                 </a>
-                <a href="?pagina=curiosidades" target="_self" class="papiro-btn">
-                    <span class="icono">🔍</span>
-                    <div class="texto">Curiosidades</div>
+                <a href="?pagina=curiosidades" target="_self" class="book-tab">
+                    <span>🔍</span> Curiosidades
                 </a>
-                <a href="?pagina=pastor" target="_self" class="papiro-btn">
-                    <span class="icono">🙋</span>
-                    <div class="texto">Pregúntale al Pastor</div>
+                <a href="?pagina=pastor" target="_self" class="book-tab">
+                    <span>🙋</span> Al Pastor
                 </a>
-                <a href="?pagina=mitos" target="_self" class="papiro-btn">
-                    <span class="icono">⚠️</span>
-                    <div class="texto">Mitos y Doctrinas</div>
+                <a href="?pagina=mitos" target="_self" class="book-tab">
+                    <span>⚠️</span> Mitos
                 </a>
-                <a href="?pagina=suenos" target="_self" class="papiro-btn">
-                    <span class="icono">💭</span>
-                    <div class="texto">Tus sueños</div>
+                <a href="?pagina=suenos" target="_self" class="book-tab">
+                    <span>💭</span> Sueños
                 </a>
             </div>
         </body>
         </html>
         """
-        components.html(html_botones, height=380, scrolling=False)
+        components.html(html_botones, height=320, scrolling=False)
 
     with col_der:
-        # 6. MURO DE MIEMBROS
+        # 6. MURO DE MIEMBROS (Estilo Página de Libro)
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
         st.markdown("""
-        <div class="card-light" style="padding: 25px;">
-            <p style="font-size: 0.9rem; margin-bottom: 15px; font-style: italic;">
+        <div class="book-card" style="padding: 20px;">
+            <p style="font-size: 1rem; margin-bottom: 15px; font-style: italic; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 10px;">
                 Personas que con su donación apoyan esta obra:
             </p>
             <div class="member-row">
@@ -614,12 +502,12 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("""
-        <div class="card-dark" style="padding: 25px; text-align: center;">
-            <p style="color: #D4AF37 !important; font-size: 1rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
-            <p style="font-size: 0.85rem; margin-top: 8px; margin-bottom: 15px;">Mantenida por donaciones</p>
-            <hr style="border-color: rgba(212, 175, 55, 0.3); margin: 15px 0;">
-            <p style="font-size: 0.8rem; margin: 0; color: #FDFBF7 !important;">Esta app fue creada por <strong>Willian Almenar</strong>.</p>
-            <p style="font-size: 0.75rem; margin: 5px 0 0 0; color: #B0A090 !important;">Todos los derechos reservados. Octubre 2026.</p>
+        <div class="book-card" style="padding: 20px; text-align: center; background: #E8D5B5;">
+            <p style="color: #8B5A2B !important; font-size: 1.1rem; margin: 0; font-weight: 600; letter-spacing: 1px;">✅ APP 100% GRATUITA</p>
+            <p style="font-size: 0.9rem; margin-top: 8px; margin-bottom: 15px;">Mantenida por donaciones</p>
+            <hr style="border-color: rgba(139, 90, 43, 0.3); margin: 15px 0;">
+            <p style="font-size: 0.9rem; margin: 0; color: #2C1A0F !important;">Esta app fue creada por <strong>Willian Almenar</strong>.</p>
+            <p style="font-size: 0.8rem; margin: 5px 0 0 0; color: #5C3A21 !important; font-style: italic;">Todos los derechos reservados. Octubre 2026.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -677,10 +565,10 @@ def mostrar_biblia():
                 st.markdown(f'<div class="section-header">📖 {libro_sel} {capitulo_sel}</div>', unsafe_allow_html=True)
                 texto_html = ""
                 for i, texto in enumerate(versiculos_texto, start=1):
-                    texto_html += f'<p><strong style="color: #D4AF37 !important;">{i}.</strong> {texto}</p>'
+                    texto_html += f'<p style="text-align: justify; text-indent: 20px;"><strong style="color: #8B5A2B !important;">{i}.</strong> {texto}</p>'
                 
                 st.markdown(f"""
-                <div class="card-light" style="max-height: 600px; overflow-y: auto;">
+                <div class="book-card" style="max-height: 600px; overflow-y: auto;">
                     {texto_html}
                 </div>
                 """, unsafe_allow_html=True)
@@ -718,7 +606,7 @@ def mostrar_curiosidades():
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">💡 Sabías que...</div>', unsafe_allow_html=True)
     st.markdown("""
-    <div class="card-dark">
+    <div class="book-card">
         <p>La arqueología no prueba la fe, pero sí <strong>ilumina y confirma</strong> el contexto histórico de las Escrituras.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -767,9 +655,9 @@ def mostrar_pastor():
     else:
         for r in data_pastor:
             st.markdown(f"""
-            <div class="card-light" style="margin-bottom: 15px;">
-                <p style="font-weight: 600; color: #D4AF37 !important; margin-bottom: 5px;">Pregunta: {r['pregunta']}</p>
-                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{r.get('fecha', '')}</p>
+            <div class="book-card">
+                <p style="font-weight: 600; color: #8B5A2B !important; margin-bottom: 5px;">Pregunta: {r['pregunta']}</p>
+                <p style="font-size: 0.9rem; color: #5C3A21 !important; margin-bottom: 10px; font-style: italic;">{r.get('fecha', '')}</p>
                 <p><strong>Respuesta:</strong> {r['respuesta']}</p>
             </div>
             """, unsafe_allow_html=True)
@@ -818,9 +706,9 @@ def mostrar_suenos():
     else:
         for s in data_suenos:
             st.markdown(f"""
-            <div class="card-light" style="margin-bottom: 15px;">
-                <p style="font-weight: 600; color: #D4AF37 !important; margin-bottom: 5px;">Sueño: {s['sueno']}</p>
-                <p style="font-size: 0.9rem; color: #666 !important; margin-bottom: 10px;">{s.get('fecha', '')}</p>
+            <div class="book-card">
+                <p style="font-weight: 600; color: #8B5A2B !important; margin-bottom: 5px;">Sueño: {s['sueno']}</p>
+                <p style="font-size: 0.9rem; color: #5C3A21 !important; margin-bottom: 10px; font-style: italic;">{s.get('fecha', '')}</p>
                 <p><strong>Interpretación:</strong> {s['interpretacion']}</p>
             </div>
             """, unsafe_allow_html=True)
@@ -840,9 +728,9 @@ def mostrar_reflexiones():
     else:
         for r in data_ref:
             st.markdown(f"""
-            <div class="card-light" style="margin-bottom: 15px;">
-                <h3 style="color: #D4AF37 !important;">{r['titulo']}</h3>
-                <p>{r['contenido']}</p>
+            <div class="book-card">
+                <h3 style="color: #8B5A2B !important; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 10px;">{r['titulo']}</h3>
+                <p style="text-align: justify;">{r['contenido']}</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -861,9 +749,9 @@ def mostrar_mitos():
     else:
         for m in data_mitos:
             st.markdown(f"""
-            <div class="card-light" style="margin-bottom: 15px;">
-                <h3 style="color: #D4AF37 !important;">{m['titulo']}</h3>
-                <p>{m['explicacion']}</p>
+            <div class="book-card">
+                <h3 style="color: #8B5A2B !important; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 10px;">{m['titulo']}</h3>
+                <p style="text-align: justify;">{m['explicacion']}</p>
             </div>
             """, unsafe_allow_html=True)
 
