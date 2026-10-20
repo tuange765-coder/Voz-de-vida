@@ -111,8 +111,13 @@ st.markdown(f"""
 # ============================================
 # 4. LÓGICA DE FILTRO DE ACCESO (VISITANTES)
 # ============================================
+# Comprobar si el usuario ya se registró en esta sesión o en la URL
 if 'acceso_concedido' not in st.session_state:
     st.session_state.acceso_concedido = False
+
+# Si el usuario ya está en la URL (porque navegó), le damos acceso directo
+if "usuario_registrado" in st.query_params:
+    st.session_state.acceso_concedido = True
 
 if not st.session_state.acceso_concedido:
     st.markdown('<h1 class="hero-title" style="font-size: 3rem;">Bienvenido a Palabra de Vida</h1>', unsafe_allow_html=True)
@@ -135,6 +140,9 @@ if not st.session_state.acceso_concedido:
                     st.success(f"¡Bienvenido por primera vez, {nombre}!")
                 else:
                     st.success(f"¡Bienvenido de nuevo, {nombre}!")
+                
+                # Guardamos en la URL que el usuario ya está registrado para que no se le vuelva a pedir
+                st.query_params["usuario_registrado"] = nombre.strip()
                 st.session_state.acceso_concedido = True
                 st.rerun()
     st.stop()
@@ -293,16 +301,16 @@ def mostrar_inicio():
         </head>
         <body>
             <div class="papiro-grid">
-                <a href="?pagina=biblia" target="_self" class="papiro-btn"><span class="icono">📖</span><div class="texto">La Biblia</div></a>
-                <a href="?pagina=reflexiones" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Reflexiones</div></a>
-                <a href="?pagina=curiosidades" target="_self" class="papiro-btn"><span class="icono">🔍</span><div class="texto">Curiosidades</div></a>
-                <a href="?pagina=pastor" target="_self" class="papiro-btn"><span class="icono">🙋</span><div class="texto">Al Pastor</div></a>
-                <a href="?pagina=mitos" target="_self" class="papiro-btn"><span class="icono">⚠️</span><div class="texto">Mitos</div></a>
-                <a href="?pagina=suenos" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Sueños</div></a>
+                <a href="?pagina=biblia&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">📖</span><div class="texto">La Biblia</div></a>
+                <a href="?pagina=reflexiones&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Reflexiones</div></a>
+                <a href="?pagina=curiosidades&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">🔍</span><div class="texto">Curiosidades</div></a>
+                <a href="?pagina=pastor&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">🙋</span><div class="texto">Al Pastor</div></a>
+                <a href="?pagina=mitos&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">⚠️</span><div class="texto">Mitos</div></a>
+                <a href="?pagina=suenos&usuario_registrado={st.query_params.get('usuario_registrado', '')}" target="_self" class="papiro-btn"><span class="icono">💭</span><div class="texto">Sueños</div></a>
             </div>
         </body>
         </html>
-        """
+        """.replace("{st.query_params.get('usuario_registrado', '')}", str(st.query_params.get("usuario_registrado", "")))
         components.html(html_botones, height=380, scrolling=False)
 
     with col_der:
