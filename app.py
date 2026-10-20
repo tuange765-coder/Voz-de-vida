@@ -152,6 +152,113 @@ st.markdown(f"""
         text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
     }}
 
+    /* ==========================================
+       DISEÑO DE PESTAÑAS ESTILO PAPIRO (PREMIUM)
+       ========================================== */
+    .papiro-grid {{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }}
+    
+    .papiro-btn {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #EFE3C3; /* Tono pergamino envejecido */
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
+            radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
+            url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Textura sutil */
+        border: 1px solid #A67B5B; /* Borde madera oscuro */
+        border-radius: 4px;
+        padding: 20px 10px;
+        text-decoration: none !important;
+        color: #2C1A0F !important; /* Marrón muy oscuro, casi negro */
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-align: center;
+        box-shadow: 
+            2px 2px 5px rgba(0, 0, 0, 0.4),
+            inset 0 0 15px rgba(139, 69, 19, 0.2),
+            inset 0 0 3px rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        min-height: 110px;
+        text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+    }}
+    
+    /* Efecto de borde desgastado o textura de papiro */
+    .papiro-btn::before {{
+        content: "";
+        position: absolute;
+        top: 4px; left: 4px; right: 4px; bottom: 4px;
+        border: 1px dashed rgba(166, 123, 91, 0.4);
+        pointer-events: none;
+    }}
+
+    .papiro-btn:hover {{
+        background: #F8EED8;
+        border-color: #D4AF37;
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 
+            4px 6px 12px rgba(0, 0, 0, 0.5),
+            inset 0 0 20px rgba(212, 175, 55, 0.3),
+            inset 0 0 3px rgba(255, 255, 255, 0.8);
+        color: #1A0F0A !important;
+    }}
+    
+    .papiro-btn .icono {{
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 2;
+        color: #8B4513 !important; /* Color sepia para los iconos */
+        text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+    }}
+    
+    .papiro-btn .texto {{
+        position: relative;
+        z-index: 2;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }}
+
+    /* Botones estándar de Streamlit (formularios, volver) */
+    .stButton>button {{
+        background: #EFE3C3 !important;
+        background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png') !important;
+        color: #2C1A0F !important;
+        border: 1px solid #A67B5B !important;
+        border-radius: 4px !important;
+        padding: 15px 20px !important;
+        font-weight: 700 !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        text-align: center !important;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4) !important;
+    }}
+    .stButton>button:hover {{
+        background: #F8EED8 !important;
+        border-color: #D4AF37 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 4px 4px 10px rgba(212, 175, 55, 0.4) !important;
+        color: #1A0F0A !important;
+    }}
+    .stButton>button p {{
+        color: #2C1A0F !important;
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+    }}
+
     .member-row {{
         display: flex;
         justify-content: space-between;
@@ -358,37 +465,129 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN (Diseño Pergamino HTML)
+        # 5. BOTONES DE EXPLORACIÓN (Diseño Papiro HTML en Iframe)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
-        st.markdown("""
-        <div class="pergamino-grid">
-            <a href="?pagina=biblia" target="_self" class="pergamino-btn">
-                <span>📖</span>
-                <div class="text">La Biblia</div>
-            </a>
-            <a href="?pagina=reflexiones" target="_self" class="pergamino-btn">
-                <span>💭</span>
-                <div class="text">Reflexiones</div>
-            </a>
-            <a href="?pagina=curiosidades" target="_self" class="pergamino-btn">
-                <span>🔍</span>
-                <div class="text">Curiosidades</div>
-            </a>
-            <a href="?pagina=pastor" target="_self" class="pergamino-btn">
-                <span>🙋</span>
-                <div class="text">Pregúntale al Pastor</div>
-            </a>
-            <a href="?pagina=mitos" target="_self" class="pergamino-btn">
-                <span>⚠️</span>
-                <div class="text">Mitos y Doctrinas</div>
-            </a>
-            <a href="?pagina=suenos" target="_self" class="pergamino-btn">
-                <span>💭</span>
-                <div class="text">Tus sueños</div>
-            </a>
-        </div>
-        """, unsafe_allow_html=True)
+        # Usamos un iframe para que Streamlit no toque el diseño
+        html_botones = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
+            
+            body {
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+            
+            .papiro-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                padding: 10px;
+            }
+            
+            .papiro-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: #EFE3C3;
+                background-image: 
+                    radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 20%),
+                    url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+                border: 1px solid #A67B5B;
+                border-radius: 4px;
+                padding: 20px 10px;
+                text-decoration: none;
+                color: #2C1A0F;
+                font-family: 'Cormorant Garamond', serif;
+                font-weight: 700;
+                font-size: 1.1rem;
+                text-align: center;
+                box-shadow: 
+                    2px 2px 5px rgba(0, 0, 0, 0.4),
+                    inset 0 0 15px rgba(139, 69, 19, 0.2),
+                    inset 0 0 3px rgba(255, 255, 255, 0.5);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                min-height: 110px;
+                text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+            }
+            
+            .papiro-btn::before {
+                content: "";
+                position: absolute;
+                top: 4px; left: 4px; right: 4px; bottom: 4px;
+                border: 1px dashed rgba(166, 123, 91, 0.4);
+                pointer-events: none;
+            }
+
+            .papiro-btn:hover {
+                background: #F8EED8;
+                border-color: #D4AF37;
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 
+                    4px 6px 12px rgba(0, 0, 0, 0.5),
+                    inset 0 0 20px rgba(212, 175, 55, 0.3),
+                    inset 0 0 3px rgba(255, 255, 255, 0.8);
+                color: #1A0F0A;
+            }
+            
+            .papiro-btn .icono {
+                font-size: 1.8rem;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 2;
+                color: #8B4513;
+                text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+            }
+            
+            .papiro-btn .texto {
+                position: relative;
+                z-index: 2;
+                font-size: 0.95rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+        </style>
+        </head>
+        <body>
+            <div class="papiro-grid">
+                <a href="?pagina=biblia" target="_self" class="papiro-btn">
+                    <span class="icono">📖</span>
+                    <div class="texto">La Biblia</div>
+                </a>
+                <a href="?pagina=reflexiones" target="_self" class="papiro-btn">
+                    <span class="icono">💭</span>
+                    <div class="texto">Reflexiones</div>
+                </a>
+                <a href="?pagina=curiosidades" target="_self" class="papiro-btn">
+                    <span class="icono">🔍</span>
+                    <div class="texto">Curiosidades</div>
+                </a>
+                <a href="?pagina=pastor" target="_self" class="papiro-btn">
+                    <span class="icono">🙋</span>
+                    <div class="texto">Pregúntale al Pastor</div>
+                </a>
+                <a href="?pagina=mitos" target="_self" class="papiro-btn">
+                    <span class="icono">⚠️</span>
+                    <div class="texto">Mitos y Doctrinas</div>
+                </a>
+                <a href="?pagina=suenos" target="_self" class="papiro-btn">
+                    <span class="icono">💭</span>
+                    <div class="texto">Tus sueños</div>
+                </a>
+            </div>
+        </body>
+        </html>
+        """
+        components.html(html_botones, height=380, scrolling=False)
 
     with col_der:
         # 6. MURO DE MIEMBROS
@@ -902,4 +1101,4 @@ elif st.session_state.pagina_actual == 'reflexiones':
 elif st.session_state.pagina_actual == 'mitos':
     mostrar_mitos()
 elif st.session_state.pagina_actual == 'admin':
-    mostrar_admin()
+    mostrar_admin(
