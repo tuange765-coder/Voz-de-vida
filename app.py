@@ -152,30 +152,51 @@ st.markdown(f"""
         text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
     }}
 
+    /* ==========================================
+       NUEVO DISEÑO DE BOTONES (PESTAÑAS PREMIUM)
+       ========================================== */
     .stButton>button {{
-        background: #FDFBF7 !important;
-        color: #1A1A1A !important;
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        border-radius: 12px;
-        padding: 18px 20px;
-        font-weight: 600;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        width: 100%;
-        text-align: center;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(40, 20, 10, 0.6) 100%) !important;
+        color: #FDFBF7 !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 16px !important;
+        padding: 24px 20px !important;
+        font-weight: 600 !important;
+        font-family: 'Montserrat', sans-serif !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease-in-out !important;
+        width: 100% !important;
+        text-align: center !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(10px);
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
     }}
+    
     .stButton>button:hover {{
-        background: #F3E5AB !important;
-        border-color: #D4AF37;
-        color: #1A1A1A !important;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(60, 30, 15, 0.8) 100%) !important;
+        border-color: #F3E5AB !important;
+        color: #FDFBF7 !important;
+        transform: translateY(-5px) scale(1.02) !important;
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4) !important;
     }}
+    
     .stButton>button p {{
-        color: #1A1A1A !important;
-        font-size: 0.95rem;
-        margin: 0;
+        color: #FDFBF7 !important;
+        font-size: 0.95rem !important;
+        margin: 0 !important;
+        font-weight: 500 !important;
+        letter-spacing: 1px;
+    }}
+
+    /* Efecto para los iconos dentro de los botones (si los hay) */
+    .stButton>button svg, .stButton>button img {{
+        width: 40px;
+        height: 40px;
     }}
 
     .member-row {{
@@ -205,18 +226,23 @@ st.markdown(f"""
     .stButton>button[kind="primary"] {{
         background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
         color: #1A0F0A !important;
-        border: none;
-        font-weight: 700;
-        text-align: center;
-        justify-content: center;
-        box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.6);
-        font-size: 1.1rem;
-        padding: 20px;
+        border: none !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        justify-content: center !important;
+        box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.6) !important;
+        font-size: 1.1rem !important;
+        padding: 20px !important;
+        min-height: auto !important;
     }}
     .stButton>button[kind="primary"]:hover {{
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8);
+        transform: translateY(-3px) scale(1.02) !important;
+        box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8) !important;
         color: #1A0F0A !important;
+    }}
+    .stButton>button[kind="primary"] p {{
+        color: #1A0F0A !important;
+        font-weight: 700 !important;
     }}
     
     .stSelectbox label, .stNumberInput label {{
@@ -369,7 +395,7 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 4. REPRODUCTOR DE MÚSICA
+        # 4. REPRODUCTOR DE MÚSICA (AL 50% Y CENTRADO)
         st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
         
@@ -401,31 +427,31 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN
+        # 5. BOTONES DE EXPLORACIÓN (NUEVO DISEÑO)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         b1, b2, b3 = st.columns(3)
         with b1:
-            if st.button("📖 La Biblia", use_container_width=True):
+            if st.button("📖\n\nLa Biblia", use_container_width=True):
                 cambiar_pagina("biblia")
         with b2:
-            if st.button("💭 Reflexiones", use_container_width=True):
+            if st.button("💭\n\nReflexiones", use_container_width=True):
                 cambiar_pagina("reflexiones")
         with b3:
-            if st.button("🔍 Curiosidades", use_container_width=True):
+            if st.button("🔍\n\nCuriosidades", use_container_width=True):
                 cambiar_pagina("curiosidades")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
         b4, b5, b6 = st.columns(3)
         with b4:
-            if st.button("🙋 Pregúntale al Pastor", use_container_width=True):
+            if st.button("🙋\n\nPregúntale al Pastor", use_container_width=True):
                 cambiar_pagina("pastor")
         with b5:
-            if st.button("⚠️ Mitos y Doctrinas", use_container_width=True):
+            if st.button("⚠️\n\nMitos y Doctrinas", use_container_width=True):
                 cambiar_pagina("mitos")
         with b6:
-            if st.button("💭 Tus sueños significan algo", use_container_width=True):
+            if st.button("💭\n\nTus sueños", use_container_width=True):
                 cambiar_pagina("suenos")
 
     with col_der:
