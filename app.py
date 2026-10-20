@@ -28,9 +28,13 @@ if not MODO_DEMO:
         st.stop()
 
 # ============================================
-# 3. ESTILOS PROFESIONALES Y OCULTAMIENTO DE SIDEBAR
+# 3. ESTILOS PROFESIONALES Y LÓGICA DE ADMIN
 # ============================================
 IMG_URL = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop"
+
+# Verificamos si el administrador quiere entrar usando el truco de la URL
+query_params = st.query_params
+es_admin_url = query_params.get("admin") == "true"
 
 st.markdown(f"""
 <style>
@@ -48,9 +52,12 @@ st.markdown(f"""
     footer {{visibility: hidden;}}
     header {{visibility: hidden;}}
 
-    /* OCULTAR LA BARRA LATERAL COMPLETA PARA LOS USUARIOS */
+    /* OCULTAR LA BARRA LATERAL POR DEFECTO */
     [data-testid="collapsedControl"] {{display: none;}}
     section[data-testid="stSidebar"] {{display: none;}}
+
+    /* MOSTRARLA SOLO SI SE USA EL TRUCO ?admin=true */
+    {'section[data-testid="stSidebar"] {display: block !important;}' if es_admin_url else ''}
 
     h1, h2, h3 {{
         font-family: 'Cormorant Garamond', serif;
@@ -289,7 +296,7 @@ def obtener_video_id(url):
         return url.split("youtu.be/")[1].split("?")[0]
     return url
 
-# La barra lateral está OCULTA por CSS, pero el código del admin sigue ahí para que tú entres.
+# La barra lateral solo se muestra si se usa el truco ?admin=true
 with st.sidebar:
     st.markdown("### 🔐 Acceso Administrador")
     if not st.session_state.admin_logged:
@@ -362,7 +369,7 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 4. REPRODUCTOR DE MÚSICA (Movido aquí a la izquierda)
+        # 4. REPRODUCTOR DE MÚSICA
         st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
         
@@ -371,12 +378,14 @@ def mostrar_inicio():
             video_id = obtener_video_id(url_actual)
             
             youtube_iframe = f"""
-            <iframe width="100%" height="250" 
-                    src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
+            <div style="display: flex; justify-content: center;">
+                <iframe width="50%" height="250" 
+                        src="https://www.youtube.com/embed/{video_id}?autoplay=0&rel=0" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
             """
             components.html(youtube_iframe, height=260)
             
