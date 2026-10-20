@@ -153,50 +153,54 @@ st.markdown(f"""
     }}
 
     /* ==========================================
-       NUEVO DISEÑO DE BOTONES (PESTAÑAS PREMIUM)
+       NUEVO DISEÑO DE BOTONES ESTILO PERGAMINO
        ========================================== */
-    .stButton>button {{
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(40, 20, 10, 0.6) 100%) !important;
-        color: #FDFBF7 !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 16px !important;
-        padding: 24px 20px !important;
-        font-weight: 600 !important;
-        font-family: 'Montserrat', sans-serif !important;
-        font-size: 1rem !important;
-        transition: all 0.3s ease-in-out !important;
-        width: 100% !important;
-        text-align: center !important;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
-        backdrop-filter: blur(10px);
-        min-height: 100px;
+    .pergamino-btn {{
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        gap: 10px;
+        justify-content: center;
+        background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%);
+        border: 2px solid #C9A961;
+        border-radius: 15px;
+        padding: 20px 10px;
+        text-decoration: none !important;
+        color: #4A3B2A !important;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        text-align: center;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        min-height: 90px;
+        gap: 8px;
     }}
     
-    .stButton>button:hover {{
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(60, 30, 15, 0.8) 100%) !important;
-        border-color: #F3E5AB !important;
-        color: #FDFBF7 !important;
-        transform: translateY(-5px) scale(1.02) !important;
-        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4) !important;
-    }}
-    
-    .stButton>button p {{
-        color: #FDFBF7 !important;
-        font-size: 0.95rem !important;
-        margin: 0 !important;
-        font-weight: 500 !important;
-        letter-spacing: 1px;
+    /* Efecto de borde desgastado o textura */
+    .pergamino-btn::before {{
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+        opacity: 0.3;
+        pointer-events: none;
     }}
 
-    /* Efecto para los iconos dentro de los botones (si los hay) */
-    .stButton>button svg, .stButton>button img {{
-        width: 40px;
-        height: 40px;
+    .pergamino-btn:hover {{
+        background: linear-gradient(135deg, #FFFFFF 0%, #FCEFB4 100%);
+        border-color: #D4AF37;
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 12px 20px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.8);
+        color: #1A0F0A !important;
+    }}
+    
+    .pergamino-btn span {{
+        font-size: 1.8rem;
+        line-height: 1;
     }}
 
     .member-row {{
@@ -223,28 +227,34 @@ st.markdown(f"""
         border: 1px solid rgba(212, 175, 55, 0.4);
     }}
 
-    .stButton>button[kind="primary"] {{
-        background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
-        color: #1A0F0A !important;
-        border: none !important;
-        font-weight: 700 !important;
+    /* Estilo especial para botones de los formularios y volver */
+    .stButton>button {{
+        background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%) !important;
+        color: #4A3B2A !important;
+        border: 2px solid #C9A961 !important;
+        border-radius: 12px !important;
+        padding: 15px 20px !important;
+        font-weight: 600 !important;
+        font-family: 'Montserrat', sans-serif !important;
+        font-size: 0.95rem !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
         text-align: center !important;
-        justify-content: center !important;
-        box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.6) !important;
-        font-size: 1.1rem !important;
-        padding: 20px !important;
-        min-height: auto !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
     }}
-    .stButton>button[kind="primary"]:hover {{
-        transform: translateY(-3px) scale(1.02) !important;
-        box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.8) !important;
+    .stButton>button:hover {{
+        background: linear-gradient(135deg, #FFFFFF 0%, #FCEFB4 100%) !important;
+        border-color: #D4AF37 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4) !important;
         color: #1A0F0A !important;
     }}
-    .stButton>button[kind="primary"] p {{
-        color: #1A0F0A !important;
-        font-weight: 700 !important;
+    .stButton>button p {{
+        color: #4A3B2A !important;
+        font-size: 0.95rem !important;
+        margin: 0 !important;
     }}
-    
+
     .stSelectbox label, .stNumberInput label {{
         color: #FDFBF7 !important;
     }}
@@ -395,7 +405,7 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 4. REPRODUCTOR DE MÚSICA (AL 50% Y CENTRADO)
+        # 4. REPRODUCTOR DE MÚSICA
         st.markdown('<div class="section-header">🎵 Música Cristiana</div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 20px;">', unsafe_allow_html=True)
         
@@ -427,32 +437,26 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN (NUEVO DISEÑO)
+        # 5. BOTONES DE EXPLORACIÓN (Diseño Pergamino HTML)
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         b1, b2, b3 = st.columns(3)
         with b1:
-            if st.button("📖\n\nLa Biblia", use_container_width=True):
-                cambiar_pagina("biblia")
+            st.markdown('<a href="?pagina=biblia" target="_self" class="pergamino-btn"><span>📖</span> La Biblia</a>', unsafe_allow_html=True)
         with b2:
-            if st.button("💭\n\nReflexiones", use_container_width=True):
-                cambiar_pagina("reflexiones")
+            st.markdown('<a href="?pagina=reflexiones" target="_self" class="pergamino-btn"><span>💭</span> Reflexiones</a>', unsafe_allow_html=True)
         with b3:
-            if st.button("🔍\n\nCuriosidades", use_container_width=True):
-                cambiar_pagina("curiosidades")
+            st.markdown('<a href="?pagina=curiosidades" target="_self" class="pergamino-btn"><span>🔍</span> Curiosidades</a>', unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
         b4, b5, b6 = st.columns(3)
         with b4:
-            if st.button("🙋\n\nPregúntale al Pastor", use_container_width=True):
-                cambiar_pagina("pastor")
+            st.markdown('<a href="?pagina=pastor" target="_self" class="pergamino-btn"><span>🙋</span> Pregúntale al Pastor</a>', unsafe_allow_html=True)
         with b5:
-            if st.button("⚠️\n\nMitos y Doctrinas", use_container_width=True):
-                cambiar_pagina("mitos")
+            st.markdown('<a href="?pagina=mitos" target="_self" class="pergamino-btn"><span>⚠️</span> Mitos y Doctrinas</a>', unsafe_allow_html=True)
         with b6:
-            if st.button("💭\n\nTus sueños", use_container_width=True):
-                cambiar_pagina("suenos")
+            st.markdown('<a href="?pagina=suenos" target="_self" class="pergamino-btn"><span>💭</span> Tus sueños</a>', unsafe_allow_html=True)
 
     with col_der:
         # 6. MURO DE MIEMBROS
@@ -942,6 +946,15 @@ def mostrar_admin():
 # ============================================
 # 8. ENRUTADOR PRINCIPAL
 # ============================================
+# Lógica para manejar los botones HTML de las pestañas
+if "pagina" in st.query_params:
+    pagina_solicitada = st.query_params["pagina"]
+    if pagina_solicitada != st.session_state.pagina_actual:
+        st.session_state.pagina_actual = pagina_solicitada
+        st.query_params.clear() # Limpiamos la URL
+        st.rerun()
+
+# Enrutador principal
 if st.session_state.pagina_actual == 'inicio':
     mostrar_inicio()
 elif st.session_state.pagina_actual == 'biblia':
