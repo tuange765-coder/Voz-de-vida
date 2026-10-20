@@ -307,16 +307,28 @@ def mostrar_inicio():
 
     with col_der:
         st.markdown('<div class="section-header">🤝 Muro de Miembros</div>', unsafe_allow_html=True)
-        st.markdown("""
-        <div class="card-light" style="padding: 25px;">
-            <p style="font-size: 0.95rem; margin-bottom: 20px; font-style: italic; border-bottom: 1px solid rgba(201, 169, 97, 0.3); padding-bottom: 10px;">
-                Personas que con su donación apoyan esta obra:
-            </p>
-            <div class="member-row"><span class="member-name">Juan P.</span><span class="member-date">Oct 2026</span></div>
-            <div class="member-row"><span class="member-name">María G.</span><span class="member-date">Oct 2026</span></div>
-            <div class="member-row"><span class="member-name">Un hermano anónimo</span><span class="member-date">Sep 2026</span></div>
-        </div>
-        """, unsafe_allow_html=True)
+        
+        # MURO DE MIEMBROS DINÁMICO DESDE LA BASE DE DATOS
+        res_visitantes = execute_query(conn.table("visitantes").select("*").order("fecha_registro", desc=True).limit(10), ttl="0")
+        visitantes_data = res_visitantes.data
+        
+        st.markdown('<div class="card-light" style="padding: 25px;">', unsafe_allow_html=True)
+        st.markdown('<p style="font-size: 0.95rem; margin-bottom: 20px; font-style: italic; border-bottom: 1px solid rgba(201, 169, 97, 0.3); padding-bottom: 10px;">Personas que han visitado la app:</p>', unsafe_allow_html=True)
+        
+        if not visitantes_data:
+            st.markdown('<p style="color: #2C1A0F;">Aún no hay visitantes registrados.</p>', unsafe_allow_html=True)
+        else:
+            for v in visitantes_data:
+                fecha_corta = v['fecha_registro'][:10] if v.get('fecha_registro') else ""
+                st.markdown(f'''
+                <div class="member-row">
+                    <span class="member-name" style="color: #2C1A0F !important;">{v['nombre']} {v['apellido']}</span>
+                    <span class="member-date" style="color: #8B5A2B !important;">{fecha_corta}</span>
+                </div>
+                ''', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("""
         <div class="card-dark" style="padding: 25px; text-align: center;">
