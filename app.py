@@ -153,13 +153,13 @@ st.markdown(f"""
     }}
 
     /* ==========================================
-       DISEÑO DE PESTAÑAS ESTILO PERGAMINO (PREMIUM)
+       DISEÑO DE PESTAÑAS ESTILO PERGAMINO (ELEGANTE)
        ========================================== */
-    .pergamino-container {{
+    .pergamino-grid {{
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-        margin-bottom: 20px;
+        gap: 20px;
+        margin-bottom: 25px;
     }}
     
     .pergamino-btn {{
@@ -167,49 +167,52 @@ st.markdown(f"""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%);
-        border: 2px solid #C9A961;
-        border-radius: 12px;
+        background: #F4E8D1; /* Color base pergamino */
+        background-image: url('https://www.transparenttextures.com/patterns/old-map.png'); /* Textura sutil */
+        border: 2px solid #A67B5B; /* Borde madera/dorado oscuro */
+        border-radius: 4px;
         padding: 20px 10px;
         text-decoration: none !important;
-        color: #4A3B2A !important;
-        font-family: 'Montserrat', sans-serif;
+        color: #3E2723 !important; /* Marrón oscuro casi negro */
+        font-family: 'Cormorant Garamond', serif;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 1.2rem;
         text-align: center;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.6);
+        box-shadow: 
+            0 10px 20px rgba(0, 0, 0, 0.5), 
+            inset 0 0 15px rgba(139, 69, 19, 0.2),
+            inset 0 0 3px rgba(255, 255, 255, 0.8);
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        min-height: 110px;
-        gap: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        min-height: 100px;
+        text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
     }}
     
-    /* Efecto de textura de papel */
+    /* Efecto de borde interior desgastado */
     .pergamino-btn::before {{
         content: "";
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-        opacity: 0.4;
+        top: 6px; left: 6px; right: 6px; bottom: 6px;
+        border: 1px dashed rgba(166, 123, 91, 0.6);
         pointer-events: none;
-        z-index: 1;
     }}
 
     .pergamino-btn:hover {{
-        background: linear-gradient(135deg, #FFFFFF 0%, #FCEFB4 100%);
+        background: #FFF3E0;
         border-color: #D4AF37;
-        transform: translateY(-6px) scale(1.03);
-        box-shadow: 0 12px 25px rgba(212, 175, 55, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.9);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 
+            0 15px 25px rgba(0, 0, 0, 0.6), 
+            inset 0 0 20px rgba(212, 175, 55, 0.3),
+            inset 0 0 3px rgba(255, 255, 255, 1);
         color: #1A0F0A !important;
     }}
     
     .pergamino-btn span {{
-        font-size: 2rem;
-        line-height: 1;
+        font-size: 1.5rem;
+        margin-bottom: 8px;
         position: relative;
         z-index: 2;
     }}
@@ -217,45 +220,37 @@ st.markdown(f"""
     .pergamino-btn .text {{
         position: relative;
         z-index: 2;
-        font-size: 0.85rem;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
     }}
 
-    /* Efecto para el borde interior */
-    .pergamino-btn::after {{
-        content: "";
-        position: absolute;
-        top: 5px; left: 5px; right: 5px; bottom: 5px;
-        border: 1px dashed rgba(201, 169, 97, 0.5);
-        border-radius: 8px;
-        pointer-events: none;
-        z-index: 1;
-    }}
-
-    /* Botones estándar de Streamlit */
+    /* Botones estándar de Streamlit (formularios, volver) */
     .stButton>button {{
-        background: linear-gradient(135deg, #FDFBF7 0%, #F3E5AB 100%) !important;
-        color: #4A3B2A !important;
-        border: 2px solid #C9A961 !important;
-        border-radius: 12px !important;
+        background: #F4E8D1 !important;
+        background-image: url('https://www.transparenttextures.com/patterns/old-map.png') !important;
+        color: #3E2723 !important;
+        border: 2px solid #A67B5B !important;
+        border-radius: 6px !important;
         padding: 15px 20px !important;
-        font-weight: 600 !important;
-        font-family: 'Montserrat', sans-serif !important;
-        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: 1.1rem !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
         text-align: center !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
     }}
     .stButton>button:hover {{
-        background: linear-gradient(135deg, #FFFFFF 0%, #FCEFB4 100%) !important;
+        background: #FFF3E0 !important;
         border-color: #D4AF37 !important;
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4) !important;
+        box-shadow: 0 8px 15px rgba(212, 175, 55, 0.4) !important;
         color: #1A0F0A !important;
     }}
     .stButton>button p {{
-        color: #4A3B2A !important;
-        font-size: 0.95rem !important;
+        color: #3E2723 !important;
+        font-size: 1.1rem !important;
         margin: 0 !important;
     }}
 
@@ -469,7 +464,7 @@ def mostrar_inicio():
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         st.markdown("""
-        <div class="pergamino-container">
+        <div class="pergamino-grid">
             <a href="?pagina=biblia" target="_self" class="pergamino-btn">
                 <span>📖</span>
                 <div class="text">La Biblia</div>
