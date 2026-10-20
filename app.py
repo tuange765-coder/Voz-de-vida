@@ -97,9 +97,9 @@ st.markdown(f"""
     .member-name {{ font-weight: 600; color: #FDFBF7 !important; font-size: 1.1rem; }}
     .member-date {{ font-size: 0.9rem; color: #D4AF37 !important; font-style: italic; }}
 
-    .stSelectbox label, .stNumberInput label, .stTextInput label {{ color: #FDFBF7 !important; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; }}
-    .stSelectbox div[data-baseweb="select"] > div, .stNumberInput input, .stTextInput input {{ background-color: #FDFBF7 !important; color: #2C1A0F !important; border-radius: 8px; border: 1px solid #C9A961; }}
-    .stSelectbox div[data-baseweb="select"] *, .stNumberInput input, .stTextInput input {{ color: #2C1A0F !important; }}
+    .stSelectbox label, .stNumberInput label, .stTextInput label, .stTextArea label {{ color: #FDFBF7 !important; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; }}
+    .stSelectbox div[data-baseweb="select"] > div, .stNumberInput input, .stTextInput input, .stTextArea textarea {{ background-color: #FDFBF7 !important; color: #2C1A0F !important; border-radius: 8px; border: 1px solid #C9A961; }}
+    .stSelectbox div[data-baseweb="select"] *, .stNumberInput input, .stTextInput input, .stTextArea textarea {{ color: #2C1A0F !important; }}
 
     details {{ background: #FDFBF7 !important; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); border: 2px solid #C9A961; border-radius: 8px; padding: 15px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }}
     summary {{ font-weight: 700; color: #2C1A0F !important; font-size: 1.2rem; cursor: pointer; outline: none; font-family: 'Cormorant Garamond', serif; }}
@@ -129,23 +129,15 @@ if not st.session_state.acceso_concedido:
             if not nombre.strip() or not apellido.strip():
                 st.warning("Por favor, completa ambos campos.")
             else:
-                # Verificar si ya existe
                 res = execute_query(conn.table("visitantes").select("*").eq("nombre", nombre.strip()).eq("apellido", apellido.strip()), ttl="0")
-                
                 if not res.data:
-                    # Si no existe, lo insertamos
-                    conn.table("visitantes").insert({
-                        "nombre": nombre.strip(),
-                        "apellido": apellido.strip()
-                    }).execute()
+                    conn.table("visitantes").insert({"nombre": nombre.strip(), "apellido": apellido.strip()}).execute()
                     st.success(f"¡Bienvenido por primera vez, {nombre}!")
                 else:
                     st.success(f"¡Bienvenido de nuevo, {nombre}!")
-                
-                # Concedemos el acceso
                 st.session_state.acceso_concedido = True
                 st.rerun()
-    st.stop() # Detenemos la ejecución aquí hasta que se registre
+    st.stop()
 
 # ============================================
 # 5. LÓGICA DE DATOS Y MÚSICA
@@ -158,14 +150,6 @@ if 'admin_logged' not in st.session_state:
 def cambiar_pagina(nombre_pagina):
     st.session_state.pagina_actual = nombre_pagina
     st.rerun()
-
-URLS_YOUTUBE = [
-    "https://www.youtube.com/watch?v=W14mg_zQpZc", 
-    "https://www.youtube.com/watch?v=emVLPHouen4", 
-    "https://www.youtube.com/watch?v=zuSdkh45_L4"
-]
-if 'indice_video' not in st.session_state:
-    st.session_state.indice_video = 0
 
 def obtener_video_id(url):
     if "v=" in url:
@@ -244,44 +228,45 @@ def mostrar_inicio():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # PESTAÑA NUEVA: LA DOSIS DIARIA
+        # LA DOSIS DIARIA (MODO LECTURA Y COMENTARIOS)
         st.markdown('<div class="section-header">💊 La Dosis Diaria</div>', unsafe_allow_html=True)
         st.markdown('<div class="card-light" style="padding: 25px;">', unsafe_allow_html=True)
         
-        # Obtener la URL guardada de la base de datos
         res_dosis = execute_query(conn.table("dosis_diaria").select("*").limit(1), ttl="0")
         url_guardada = res_dosis.data[0]["url_media"] if res_dosis.data else ""
         
-        # Formulario para actualizar la URL (solo visible para el admin o para todos según prefieras)
-        with st.form("form_dosis"):
-            nueva_url = st.text_input("Ingresa la URL del audio o video de hoy", value=url_guardada, placeholder="https://...")
-            if st.form_submit_button("Guardar y Reproducir"):
-                if nueva_url.strip():
-                    if res_dosis.data:
-                        # Actualizar si ya existe
-                        conn.table("dosis_diaria").update({"url_media": nueva_url.strip(), "actualizado_en": datetime.now().isoformat()}).eq("id", res_dosis.data[0]["id"]).execute()
-                    else:
-                        # Insertar si es la primera vez
-                        conn.table("dosis_diaria").insert({"url_media": nueva_url.strip()}).execute()
-                    st.success("¡Dosis Diaria actualizada!")
-                    st.rerun()
-        
-        # Reproductor
         if url_guardada:
-            st.markdown("<br>", unsafe_allow_html=True)
             if "youtube.com" in url_guardada or "youtu.be" in url_guardada:
                 vid_id = obtener_video_id(url_guardada)
                 st.components.v1.html(f'<iframe width="100%" height="315" src="https://www.youtube.com/embed/{vid_id}" frameborder="0" allowfullscreen></iframe>', height=330)
             else:
                 st.audio(url_guardada, format="audio/mpeg")
+            
+            st.markdown("<hr style='border-color: rgba(201, 169, 97, 0.3); margin: 20px 0;'>", unsafe_allow_html=True)
+            st.markdown("### Deja tu comentario sobre la dosis de hoy")
+            with st.form("form_comentario"):
+                comentario = st.text_area("Tu comentario:")
+                if st.form_submit_button("Enviar Comentario"):
+                    if comentario.strip():
+                        conn.table("comentarios_dosis").insert({"comentario": comentario.strip()}).execute()
+                        st.success("¡Comentario enviado!")
+                        st.rerun()
+            
+            st.markdown("### Comentarios de la comunidad")
+            res_comentarios = execute_query(conn.table("comentarios_dosis").select("*").order("fecha", desc=True), ttl="0")
+            if not res_comentarios.data:
+                st.info("Aún no hay comentarios. ¡Sé el primero en comentar!")
+            else:
+                for c in res_comentarios.data:
+                    st.markdown(f'<div style="background: #FFF3E0; padding: 10px; border-radius: 5px; margin-bottom: 10px; color: #2C1A0F;"><strong>Anónimo</strong> dijo: <br>{c["comentario"]}</div>', unsafe_allow_html=True)
         else:
-            st.info("Aún no hay una dosis diaria configurada. Pega una URL arriba.")
+            st.info("Aún no hay una dosis diaria configurada. El administrador la agregará pronto.")
             
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # 5. BOTONES DE EXPLORACIÓN
+        # BOTONES DE EXPLORACIÓN
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         html_botones = """
@@ -517,7 +502,7 @@ def mostrar_admin():
     st.markdown('<p class="hero-subtitle">Gestiona el contenido de la app</p>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños", "👥 Visitantes"])
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["🙋 Pastor", "💭 Reflexiones", "🔍 Curiosidades", "⚠️ Mitos", "💭 Sueños", "👥 Visitantes", "💊 Dosis Diaria"])
 
     with tab1:
         st.markdown("### Preguntas Pendientes")
@@ -688,6 +673,23 @@ def mostrar_admin():
             for v in visitantes:
                 st.markdown(f'<div class="card-light" style="padding: 15px; margin-bottom: 10px;"><strong>{v["nombre"]} {v["apellido"]}</strong> - Registrado el: {v["fecha_registro"][:10]}</div>', unsafe_allow_html=True)
 
+    with tab7:
+        st.markdown("### Configurar la Dosis Diaria")
+        res_dosis = execute_query(conn.table("dosis_diaria").select("*").limit(1), ttl="0")
+        url_actual = res_dosis.data[0]["url_media"] if res_dosis.data else ""
+        
+        with st.form("form_admin_dosis"):
+            nueva_url = st.text_input("URL del video o audio", value=url_actual, placeholder="https://...")
+            if st.form_submit_button("Guardar Dosis Diaria", type="primary", use_container_width=True):
+                if nueva_url.strip():
+                    if res_dosis.data:
+                        conn.table("dosis_diaria").update({"url_media": nueva_url.strip()}).eq("id", res_dosis.data[0]["id"]).execute()
+                    else:
+                        conn.table("dosis_diaria").insert({"url_media": nueva_url.strip()}).execute()
+                    st.success("¡Dosis Diaria actualizada correctamente!")
+                    st.rerun()
+                else:
+                    st.warning("Por favor, ingresa una URL válida.")
 
 # ============================================
 # 8. ENRUTADOR PRINCIPAL
