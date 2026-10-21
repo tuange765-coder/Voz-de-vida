@@ -741,12 +741,37 @@ def mostrar_admin():
             nueva_url = st.text_input("URL del video o audio", value=url_actual, placeholder="https://...")
             if st.form_submit_button("Guardar Dosis Diaria", type="primary", use_container_width=True):
                 if nueva_url.strip():
+                    url_final = nueva_url.strip()
+                    
+                    # Lógica para convertir enlaces de Apple Podcasts a MP3 directo
+                    if "podcasts.apple.com" in url_final:
+                        try:
+                            # Extraer ID del podcast y del episodio
+                            partes = url_final.split("/id")
+                            if len(partes) > 1:
+                                id_podcast = partes[1].split("?")[0]
+                                id_episodio = url_final.split("?i=")[1] if "?i=" in url_final else None
+                                
+                                if id_podcast:
+                                    # Consultar API de iTunes
+                                    api_url = f"https://itunes.apple.com/lookup?id={id_podcast}&entity=podcastEpisode"
+                                    respuesta = requests.get(api_url)
+                                    datos = respuesta.json()
+                                    
+                                    # Buscar el episodio correcto
+                                    for item in datos.get("results", []):
+                                        if item.get("trackId") == int(id_episodio):
+                                            url_final = item.get("episodeUrl", url_final)
+                                            break
+                        except Exception as e:
+                            st.warning(f"No se pudo convertir el enlace de Apple Podcasts automáticamente. Se guardará el enlace original. Detalle: {e}")
+                    
                     try:
                         if res_dosis.data:
-                            conn.table("dosis_diaria").update({"url_media": nueva_url.strip()}).eq("id", res_dosis.data[0]["id"]).execute()
+                            conn.table("dosis_diaria").update({"url_media": url_final}).eq("id", res_dosis.data[0]["id"]).execute()
                         else:
-                            conn.table("dosis_diaria").insert({"url_media": nueva_url.strip()}).execute()
-                        st.success("¡Dosis Diaria guardada correctamente!")
+                            conn.table("dosis_diaria").insert({"url_media": url_final}).execute()
+                        st.success(f"¡Dosis Diaria guardada correctamente! URL final: {url_final}")
                         st.rerun()
                     except Exception as e:
                         st.error(f"Error al guardar. Detalle: {e}")
