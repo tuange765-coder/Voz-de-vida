@@ -702,7 +702,21 @@ def mostrar_admin():
             st.info("Aún no hay visitantes registrados.")
         else:
             for v in visitantes:
-                st.markdown(f'<div class="card-light" style="padding: 15px; margin-bottom: 10px;"><strong>{v["nombre"]} {v["apellido"]}</strong> - Registrado el: {v["fecha_registro"][:10]}</div>', unsafe_allow_html=True)
+                with st.expander(f"{v['nombre']} {v['apellido']} - {v['fecha_registro'][:10]}"):
+                    with st.form(f"edit_visitante_{v['id']}"):
+                        nuevo_nombre = st.text_input("Nombre", value=v['nombre'], key=f"nom_{v['id']}")
+                        nuevo_apellido = st.text_input("Apellido", value=v['apellido'], key=f"ape_{v['id']}")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.form_submit_button("✏️ Guardar Cambios", type="primary", use_container_width=True):
+                                conn.table("visitantes").update({"nombre": nuevo_nombre, "apellido": nuevo_apellido}).eq("id", v['id']).execute()
+                                st.success("¡Visitante actualizado!")
+                                st.rerun()
+                        with col2:
+                            if st.form_submit_button("🗑️ Eliminar Visitante", type="secondary", use_container_width=True):
+                                conn.table("visitantes").delete().eq("id", v['id']).execute()
+                                st.success("¡Visitante eliminado!")
+                                st.rerun()
 
     with tab7:
         st.markdown("### Configurar la Dosis Diaria")
