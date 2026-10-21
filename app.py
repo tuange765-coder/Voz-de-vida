@@ -764,4 +764,4 @@ elif st.session_state.pagina_actual == 'reflexiones':
 elif st.session_state.pagina_actual == 'mitos':
     mostrar_mitos()
 elif st.session_state.pagina_actual == 'admin':
-    mostrar_admin(
+    mostrar_admin()
