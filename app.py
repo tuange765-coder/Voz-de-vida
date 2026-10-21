@@ -82,16 +82,14 @@ st.markdown(f"""
 
     .section-header {{ font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: #FDFBF7 !important; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 10px; }}
 
-    /* ==========================================
-       NUEVO DISEÑO DE BOTONES (ESTILO MARCADOR DE LIBRO)
-       ========================================== */
+    /* BOTONES NATIVOS ESTILO MARCADOR */
     .stButton>button {{
         background: #FDFBF7 !important; 
         background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png') !important;
         color: #2C1A0F !important; 
         border: 1px solid #C9A961 !important; 
-        border-top: 8px solid #8B5A2B !important; /* Borde superior grueso como marcador */
-        border-radius: 0px 0px 8px 8px !important; /* Bordes inferiores redondeados */
+        border-top: 8px solid #8B5A2B !important; 
+        border-radius: 0px 0px 8px 8px !important; 
         padding: 25px 15px !important; 
         font-weight: 700 !important; 
         font-family: 'Cormorant Garamond', serif !important;
@@ -99,7 +97,7 @@ st.markdown(f"""
         transition: all 0.3s ease !important; 
         width: 100% !important; 
         text-align: center !important;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4) !important; /* Sombra profunda */
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4) !important; 
         min-height: 120px !important;
         display: flex !important;
         flex-direction: column !important;
@@ -299,7 +297,7 @@ def mostrar_inicio():
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # BOTONES DE EXPLORACIÓN (ESTILO MARCADOR DE LIBRO)
+        # BOTONES DE EXPLORACIÓN
         st.markdown('<div class="section-header">📖 Explora la Palabra</div>', unsafe_allow_html=True)
         
         b1, b2, b3 = st.columns(3)
@@ -711,6 +709,20 @@ def mostrar_admin():
         res_dosis = execute_query(conn.table("dosis_diaria").select("*").limit(1), ttl="0")
         url_actual = res_dosis.data[0]["url_media"] if res_dosis.data else ""
         
+        if res_dosis.data:
+            st.markdown(f"**URL actual:** `{url_actual}`")
+            if st.button("🗑️ Eliminar Dosis Actual", type="secondary", use_container_width=True):
+                try:
+                    conn.table("dosis_diaria").delete().eq("id", res_dosis.data[0]["id"]).execute()
+                    st.success("¡Dosis Diaria eliminada correctamente!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error al eliminar. Detalle: {e}")
+        else:
+            st.info("Aún no hay una Dosis Diaria configurada. Puedes agregar una abajo.")
+
+        st.markdown("---")
+        st.markdown("### Agregar / Actualizar Dosis Diaria")
         with st.form("form_admin_dosis"):
             nueva_url = st.text_input("URL del video o audio", value=url_actual, placeholder="https://...")
             if st.form_submit_button("Guardar Dosis Diaria", type="primary", use_container_width=True):
@@ -720,10 +732,10 @@ def mostrar_admin():
                             conn.table("dosis_diaria").update({"url_media": nueva_url.strip()}).eq("id", res_dosis.data[0]["id"]).execute()
                         else:
                             conn.table("dosis_diaria").insert({"url_media": nueva_url.strip()}).execute()
-                        st.success("¡Dosis Diaria actualizada correctamente!")
+                        st.success("¡Dosis Diaria guardada correctamente!")
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Error al guardar en Supabase. Asegúrate de haber ejecutado el SQL de permisos. Detalle: {e}")
+                        st.error(f"Error al guardar. Detalle: {e}")
                 else:
                     st.warning("Por favor, ingresa una URL válida.")
 
@@ -752,4 +764,4 @@ elif st.session_state.pagina_actual == 'reflexiones':
 elif st.session_state.pagina_actual == 'mitos':
     mostrar_mitos()
 elif st.session_state.pagina_actual == 'admin':
-    mostrar_admin()
+    mostrar_admin(
