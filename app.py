@@ -275,13 +275,21 @@ def mostrar_inicio():
             
             st.markdown("<hr style='border-color: rgba(201, 169, 97, 0.3); margin: 20px 0;'>", unsafe_allow_html=True)
             st.markdown("### Deja tu comentario sobre la dosis de hoy")
+            
+            # Formulario de comentario con Nombre y Comentario
             with st.form("form_comentario"):
+                nombre_comentario = st.text_input("Tu nombre")
                 comentario = st.text_area("Tu comentario:")
                 if st.form_submit_button("Enviar Comentario"):
                     if comentario.strip():
-                        conn.table("comentarios_dosis").insert({"comentario": comentario.strip()}).execute()
+                        conn.table("comentarios_dosis").insert({
+                            "nombre": nombre_comentario.strip() if nombre_comentario.strip() else "Anónimo",
+                            "comentario": comentario.strip()
+                        }).execute()
                         st.success("¡Comentario enviado!")
                         st.rerun()
+                    else:
+                        st.warning("Por favor, escribe un comentario antes de enviar.")
             
             st.markdown("### Comentarios de la comunidad")
             res_comentarios = execute_query(conn.table("comentarios_dosis").select("*").order("fecha", desc=True), ttl="0")
@@ -289,7 +297,25 @@ def mostrar_inicio():
                 st.info("Aún no hay comentarios. ¡Sé el primero en comentar!")
             else:
                 for c in res_comentarios.data:
-                    st.markdown(f'<div style="background: #FFF3E0; padding: 10px; border-radius: 5px; margin-bottom: 10px; color: #2C1A0F;"><strong>Anónimo</strong> dijo: <br>{c["comentario"]}</div>', unsafe_allow_html=True)
+                    nombre_mostrar = c.get("nombre", "Anónimo")
+                    respuesta_admin = c.get("respuesta", "")
+                    
+                    html_comentario = f"""
+                    <div style="background: #FFF3E0; padding: 15px; border-radius: 5px; margin-bottom: 10px; color: #2C1A0F;">
+                        <p style="margin: 0; font-weight: bold;">{nombre_mostrar}</p>
+                        <p style="margin: 5px 0 10px 0;">{c['comentario']}</p>
+                    """
+                    
+                    if respuesta_admin:
+                        html_comentario += f"""
+                        <div style="background: #E8F5E9; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #4CAF50;">
+                            <p style="margin: 0; font-weight: bold; color: #2E7D32;">Respuesta del Administrador:</p>
+                            <p style="margin: 5px 0 0 0;">{respuesta_admin}</p>
+                        </div>
+                        """
+                    
+                    html_comentario += "</div>"
+                    st.markdown(html_comentario, unsafe_allow_html=True)
         else:
             st.info("Aún no hay una dosis diaria configurada. El administrador la agregará pronto.")
             
@@ -741,17 +767,71 @@ def mostrar_admin():
             nueva_url = st.text_input("URL del video o audio", value=url_actual, placeholder="https://...")
             if st.form_submit_button("Guardar Dosis Diaria", type="primary", use_container_width=True):
                 if nueva_url.strip():
+                    url_final = nueva_url.strip()
+                    
+                    # Lógica para convertir enlaces de Apple Podcasts a MP3 directo
+                    if "podcasts.apple.com" in url_final:
+                        try:
+                            partes = url_final.split("/id")
+                            if len(partes) > 1:
+                                id_podcast = partes[1].split("?")[0]
+                                id_episodio = url_final.split("?i=")[1] if "?i=" in url_final else None
+                                
+                                if id_podcast:
+                                    api_url = f"https://itunes.apple.com/lookup?id={id_podcast}&entity=podcastEpisode"
+                                    respuesta = requests.get(api_url)
+                                    datos = respuesta.json()
+                                    
+                                    encontrado = False
+                                    for item in datos.get("results", []):
+                                        if item.get("trackId") == int(id_episodio):
+                                            url_final = item.get("episodeUrl", url_final)
+                                            encontrado = True
+                                            break
+                                    
+                                    if not encontrado:
+                                        st.warning("No se encontró el episodio en la API de iTunes. Se guardará el enlace original.")
+                        except Exception as e:
+                            st.warning(f"No se pudo convertir el enlace de Apple Podcasts. Se guardará el enlace original. Detalle: {e}")
+                    
                     try:
                         if res_dosis.data:
-                            conn.table("dosis_diaria").update({"url_media": nueva_url.strip()}).eq("id", res_dosis.data[0]["id"]).execute()
+                            conn.table("dosis_diaria").update({"url_media": url_final}).eq("id", res_dosis.data[0]["id"]).execute()
                         else:
-                            conn.table("dosis_diaria").insert({"url_media": nueva_url.strip()}).execute()
-                        st.success("¡Dosis Diaria guardada correctamente!")
+                            conn.table("dosis_diaria").insert({"url_media": url_final}).execute()
+                        st.success(f"¡Dosis Diaria guardada correctamente! URL final: {url_final}")
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Error al guardar. Detalle: {e}")
+                        st.error(f"Error al guardar en Supabase. Detalle: {e}")
                 else:
                     st.warning("Por favor, ingresa una URL válida.")
+
+        st.markdown("---")
+        st.markdown("### Comentarios de la Dosis Diaria")
+        res_comentarios = execute_query(conn.table("comentarios_dosis").select("*").order("fecha", desc=True), ttl="0")
+        if not res_comentarios.data:
+            st.info("Aún no hay comentarios en la dosis diaria.")
+        else:
+            for c in res_comentarios.data:
+                with st.expander(f"Comentario de {c.get('nombre', 'Anónimo')} - {c['fecha'][:10]}"):
+                    st.write(f"**Comentario:** {c['comentario']}")
+                    respuesta_actual = c.get("respuesta", "")
+                    if respuesta_actual:
+                        st.markdown(f'<div style="background: #E8F5E9; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #4CAF50;"><p style="margin: 0; font-weight: bold; color: #2E7D32;">Tu respuesta actual:</p><p style="margin: 5px 0 0 0; color: #2C1A0F;">{respuesta_actual}</p></div>', unsafe_allow_html=True)
+                    
+                    with st.form(f"form_respuesta_{c['id']}"):
+                        nueva_respuesta = st.text_area("Tu respuesta", value=respuesta_actual, key=f"respuesta_{c['id']}")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.form_submit_button("Publicar Respuesta", type="primary", use_container_width=True):
+                                conn.table("comentarios_dosis").update({"respuesta": nueva_respuesta.strip()}).eq("id", c['id']).execute()
+                                st.success("¡Respuesta publicada!")
+                                st.rerun()
+                        with col2:
+                            if st.form_submit_button("🗑️ Eliminar Comentario", type="secondary", use_container_width=True):
+                                conn.table("comentarios_dosis").delete().eq("id", c['id']).execute()
+                                st.success("¡Comentario eliminado!")
+                                st.rerun()
 
 # ============================================
 # 8. ENRUTADOR PRINCIPAL
